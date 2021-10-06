@@ -1,6 +1,6 @@
 # Frontend - Full Stack Trivia API
 
-### Getting Setup
+## Getting Setup
 
 > _tip_: this frontend is designed to work with [Flask-based Backend](../backend). It is recommended you stand up the backend first, test using Postman or curl, update the endpoints in the frontend, and then the frontend should integrate smoothly.
 
@@ -18,7 +18,7 @@ npm install
 
 > **_tip_**: `npm i`is shorthand for `npm install`
 
-# Required Tasks
+## Required Tasks
 
 ### Running Your Frontend in Dev Mode
 
@@ -55,7 +55,7 @@ You can optionally update this game play to increase the number of questions or 
 
 > **Spoiler Alert:** If needed, there are details below regarding the expected endpoints and behavior. But, ONLY consult there if necessary, so you give yourself the opportunity to practice understanding code!
 
-# DO NOT PROCEED: ENDPOINT SPOILERS
+## DO NOT PROCEED: ENDPOINT SPOILERS
 
 > Only read the below to confirm your notes regarding the expected API endpoint behavior based on reading the frontend codebase.
 

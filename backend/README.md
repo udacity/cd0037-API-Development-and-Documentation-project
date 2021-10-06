@@ -1,18 +1,16 @@
 # Backend - Full Stack Trivia API
 
-### Installing Dependencies for the Backend
+## Installing Dependencies for the Backend
 
 1. **Python 3.7** - Follow instructions to install the latest version of python for your platform in the [python docs](https://docs.python.org/3/using/unix.html#getting-and-installing-the-latest-version-of-python)
 
 2. **Virtual Enviornment** - We recommend working within a virtual environment whenever using Python for projects. This keeps your dependencies for each project separate and organaized. Instructions for setting up a virual enviornment for your platform can be found in the [python docs](https://packaging.python.org/guides/installing-using-pip-and-virtual-environments/)
 
-3. **PIP Dependencies** - Once you have your virtual environment setup and running, install dependencies by naviging to the `/backend` directory and running:
+3. **PIP Dependencies** - Once you have your virtual environment setup and running, install all of the required packages we selected within the `requirements.txt` filed by navigating to the `/backend` directory and running:
 
 ```bash
 pip install -r requirements.txt
 ```
-
-This will install all of the required packages we selected within the `requirements.txt` file.
 
 4. **Key Dependencies**
 
@@ -73,7 +71,7 @@ One note before you delve into your tasks: for each endpoint, you are expected t
 
 This README is missing documentation of your endpoints. Below is an example for your endpoint to get all categories. Please use it as a reference for creating your documentation and resubmit your code.
 
-```
+```bash
 Endpoints
 GET '/api/v1.0/categories'
 GET ...
@@ -97,7 +95,7 @@ GET '/api/v1.0/categories'
 
 To run the tests, run
 
-```
+```bash
 dropdb trivia_test
 createdb trivia_test
 psql trivia_test < trivia.psql
