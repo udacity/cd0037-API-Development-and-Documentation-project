@@ -2,7 +2,7 @@
 
 ## Getting Setup
 
-> _tip_: this frontend is designed to work with [Flask-based Backend](../backend) so it will not load successfully if the backend is not working or not connect. We recommend that you **stand up the backend first**, test using Postman or curl, update the endpoints in the frontend, and then the frontend should integrate smoothly.
+> _tip_: this frontend is designed to work with [Flask-based Backend](../backend) so it will not load successfully if the backend is not working or not connected. We recommend that you **stand up the backend first**, test using Postman or curl, update the endpoints in the frontend, and then the frontend should integrate smoothly.
 
 ### Installing Dependencies
 
@@ -63,7 +63,7 @@ You can optionally update this game play to increase the number of questions or 
 
 > Only read the below to confirm your notes regarding the expected API endpoint behavior based on reading the frontend codebase.
 
-**Here are the expected endpoints and behavior**:
+### Expected endpoints and behaviors
 
 `GET '/categories'`
 
@@ -71,14 +71,16 @@ You can optionally update this game play to increase the number of questions or 
 - Request Arguments: None
 - Returns: An object with a single key, categories, that contains an object of id: category_string key:value pairs.
 
-```bash
+```json
 {
-    'categories': { '1' : "Science",
-    '2' : "Art",
-    '3' : "Geography",
-    '4' : "History",
-    '5' : "Entertainment",
-    '6' : "Sports" }
+  "categories": {
+    "1": "Science",
+    "2": "Art",
+    "3": "Geography",
+    "4": "History",
+    "5": "Entertainment",
+    "6": "Sports"
+  }
 }
 ```
 
@@ -90,25 +92,27 @@ You can optionally update this game play to increase the number of questions or 
 - Request Arguments: `page` - integer
 - Returns: An object with 10 paginated questions, total questions, object including all categories, and current category string
 
-```bash
+```json
 {
-    'questions': [
-        {
-            'id': 1,
-            'question': 'This is a question',
-            'answer': 'This is an answer',
-            'difficulty': 5,
-            'category': 2
-        },
-    ],
-    'totalQuestions': 100,
-    'categories': { '1' : "Science",
-    '2' : "Art",
-    '3' : "Geography",
-    '4' : "History",
-    '5' : "Entertainment",
-    '6' : "Sports" },
-    'currentCategory': 'History'
+  "questions": [
+    {
+      "id": 1,
+      "question": "This is a question",
+      "answer": "This is an answer",
+      "difficulty": 5,
+      "category": 2
+    }
+  ],
+  "totalQuestions": 100,
+  "categories": {
+    "1": "Science",
+    "2": "Art",
+    "3": "Geography",
+    "4": "History",
+    "5": "Entertainment",
+    "6": "Sports"
+  },
+  "currentCategory": "History"
 }
 ```
 
@@ -120,19 +124,19 @@ You can optionally update this game play to increase the number of questions or 
 - Request Arguments: `id` - integer
 - Returns: An object with questions for the specified category, total questions, and current category string
 
-```bash
+```json
 {
-    'questions': [
-        {
-            'id': 1,
-            'question': 'This is a question',
-            'answer': 'This is an answer',
-            'difficulty': 5,
-            'category': 4
-        },
-    ],
-    'totalQuestions': 100,
-    'currentCategory': 'History'
+  "questions": [
+    {
+      "id": 1,
+      "question": "This is a question",
+      "answer": "This is an answer",
+      "difficulty": 5,
+      "category": 4
+    }
+  ],
+  "totalQuestions": 100,
+  "currentCategory": "History"
 }
 ```
 
@@ -151,7 +155,7 @@ You can optionally update this game play to increase the number of questions or 
 - Sends a post request in order to get the next question
 - Request Body:
 
-```bash
+```json
 {
     'previous_questions': [1, 4, 20, 15]
     quiz_category': 'current category'
@@ -160,15 +164,15 @@ You can optionally update this game play to increase the number of questions or 
 
 - Returns: a single new question object
 
-```bash
+```json
 {
-    'question': {
-        'id': 1,
-        'question': 'This is a question',
-        'answer': 'This is an answer',
-        'difficulty': 5,
-        'category': 4
-    }
+  "question": {
+    "id": 1,
+    "question": "This is a question",
+    "answer": "This is an answer",
+    "difficulty": 5,
+    "category": 4
+  }
 }
 ```
 
@@ -179,12 +183,12 @@ You can optionally update this game play to increase the number of questions or 
 - Sends a post request in order to add a new question
 - Request Body:
 
-```bash
+```json
 {
-    'question':  'Heres a new question string',
-    'answer':  'Heres a new answer string',
-    'difficulty': 1,
-    'category': 3,
+  "question": "Heres a new question string",
+  "answer": "Heres a new answer string",
+  "difficulty": 1,
+  "category": 3
 }
 ```
 
@@ -197,27 +201,26 @@ You can optionally update this game play to increase the number of questions or 
 - Sends a post request in order to search for a specific question by search term
 - Request Body:
 
-```bash
+```json
 {
-    'searchTerm': 'this is the term the user is looking for'
+  "searchTerm": "this is the term the user is looking for"
 }
-
 ```
 
 - Returns: any array of questions, a number of totalQuestions that met the search term and the current category string
 
-```bash
+```json
 {
-    'questions': [
-        {
-            'id': 1,
-            'question': 'This is a question',
-            'answer': 'This is an answer',
-            'difficulty': 5,
-            'category': 5
-        },
-    ],
-    'totalQuestions': 100,
-    'currentCategory': 'Entertainment'
+  "questions": [
+    {
+      "id": 1,
+      "question": "This is a question",
+      "answer": "This is an answer",
+      "difficulty": 5,
+      "category": 5
+    }
+  ],
+  "totalQuestions": 100,
+  "currentCategory": "Entertainment"
 }
 ```
