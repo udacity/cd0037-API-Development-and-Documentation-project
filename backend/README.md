@@ -1,18 +1,20 @@
-# Backend - Full Stack Trivia API
+# Backend - Trivia API
 
 ## Installing Dependencies for the Backend
 
+### Installing Dependencies
+
 1. **Python 3.7** - Follow instructions to install the latest version of python for your platform in the [python docs](https://docs.python.org/3/using/unix.html#getting-and-installing-the-latest-version-of-python)
 
-2. **Virtual Enviornment** - We recommend working within a virtual environment whenever using Python for projects. This keeps your dependencies for each project separate and organaized. Instructions for setting up a virual enviornment for your platform can be found in the [python docs](https://packaging.python.org/guides/installing-using-pip-and-virtual-environments/)
+2. **Virtual Environment** - We recommend working within a virtual environment whenever using Python for projects. This keeps your dependencies for each project separate and organized. Instructions for setting up a virual environment for your platform can be found in the [python docs](https://packaging.python.org/guides/installing-using-pip-and-virtual-environments/)
 
-3. **PIP Dependencies** - Once you have your virtual environment setup and running, install all of the required packages we selected within the `requirements.txt` filed by navigating to the `/backend` directory and running:
+3. **PIP Dependencies** - Once your virtual environment is setup and running, install the required dependencies by navigating to the `/backend` directory and running:
 
 ```bash
 pip install -r requirements.txt
 ```
 
-4. **Key Dependencies**
+#### Key Pip Dependencies
 
 - [Flask](http://flask.pocoo.org/) is a lightweight backend microservices framework. Flask is required to handle requests and responses.
 
@@ -22,7 +24,13 @@ pip install -r requirements.txt
 
 ### Database Setup
 
-With Postgres running, restore a database using the trivia.psql file provided. From the backend folder in terminal run:
+With Postgres running, create a `trivia` database:
+
+```bash
+createbd trivia
+```
+
+Populate the database using the `trivia.psql` file provided. From the `backend` folder in terminal run:
 
 ```bash
 psql trivia < trivia.psql
@@ -40,12 +48,12 @@ flask run --reload
 
 The `--reload` flag will detect file changes and restart the server automatically.
 
-## ToDo Tasks
+## To Do Tasks
 
 These are the files you'd want to edit in the backend:
 
-1. `./backend/flaskr/__init__.py`
-2. `./backend/test_flaskr.py`
+1. `backend/flaskr/__init__.py`
+2. `backend/test_flaskr.py`
 
 One note before you delve into your tasks: for each endpoint, you are expected to define the endpoint and response data. The frontend will be a plentiful resource because it is set up to expect certain endpoints and response data formats already. You should feel free to specify endpoints in your own way; if you do so, make sure to update the frontend or you will get some unexpected behavior.
 
@@ -67,31 +75,30 @@ One note before you delve into your tasks: for each endpoint, you are expected t
 
 9. Create error handlers for all expected errors including 400, 404, 422 and 500.
 
-## Review Comment to the Students
+## Documenting your Endpoints
 
-This README is missing documentation of your endpoints. Below is an example for your endpoint to get all categories. Please use it as a reference for creating your documentation and resubmit your code.
+You will need to provide detailed documentation of your API endpoints including the URL, request parameters and the response body. Use the example below as a reference.
 
-```bash
-Endpoints
-GET '/api/v1.0/categories'
-GET ...
-POST ...
-DELETE ...
+### Documentation Example
 
-GET '/api/v1.0/categories'
+GET `'/api/v1.0/categories'`
+
 - Fetches a dictionary of categories in which the keys are the ids and the value is the corresponding string of the category
 - Request Arguments: None
 - Returns: An object with a single key, categories, that contains a object of id: category_string key:value pairs.
+
+```bash
 {'1' : "Science",
 '2' : "Art",
 '3' : "Geography",
 '4' : "History",
 '5' : "Entertainment",
 '6' : "Sports"}
-
 ```
 
 ## Testing
+
+Write at least one test for the success and at least one error behavior of each endpoint using the unittest library.
 
 To run the tests, run
 
