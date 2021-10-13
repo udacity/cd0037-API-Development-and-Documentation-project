@@ -1,4 +1,4 @@
-# Full Stack API Final Project
+# API Development and Documentation Final Project
 
 ## Trivia App
 
