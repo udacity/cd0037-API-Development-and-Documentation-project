@@ -43,17 +43,18 @@ def create_app(test_config=None):
     def get_all_questions():
         try:
             categories = Category.query.order_by(Category.id).all()
-           
+
             # for category in categories:
             #     formatted_Categories={
             #         category.id:category.type
             #     }
-            formatted_Categories={category.id:category.type for category in categories}
+            formatted_Categories = {
+                category.id: category.type for category in categories}
             return jsonify({
                 "success": True,
                 "categories": formatted_Categories,
                 "total_categories": len(categories),
-                
+
             })
         except:
             abort(404)
@@ -79,12 +80,13 @@ def create_app(test_config=None):
             questions = Question.query.order_by(Question.id).all()
             formatted_questions = [question.format() for question in questions]
             categories = Category.query.order_by(Category.id).all()
-            formatted_categories={category.id:category.type for category in categories}
+            formatted_categories = {
+                category.id: category.type for category in categories}
             return jsonify({
                 "success": True,
                 "questions": formatted_questions[start:end],
                 "total_questions": len(Question.query.all()),
-                "categories":formatted_categories
+                "categories": formatted_categories
             })
         except:
             abort(404)
@@ -101,7 +103,7 @@ def create_app(test_config=None):
         question = Question.query.filter(
             Question.id == question_id).one_or_none()
         if question is None:
-            abort(422)
+            abort(404)
         question.delete()
         return jsonify({
             "success": True,
@@ -121,19 +123,33 @@ def create_app(test_config=None):
     @app.route('/questions', methods=['POST'])
     def create_question():
         body = request.get_json()
-        add_question = body.get('question',None)
-        new_answer = body.get('answer',None)
-        question_category = body.get('category',None)
-        new_difficulty_score = body.get('difficulty',None)
-
+        add_question = body.get('question', None)
+        new_answer = body.get('answer', None)
+        question_category = body.get('category', None)
+        new_difficulty_score = body.get('difficulty', None)
+        search_term = body.get('searchTerm', None)
         try:
-            # if not(add_question in body)
-            new_question = Question(
-                question=add_question,
-                answer=new_answer,
-                category=question_category,
-                difficulty=new_difficulty_score
-            )
+
+            if search_term:
+                page = request.args.get('page', 1, type=int)
+                start = (page - 1) * QUESTIONS_PER_PAGE
+                end = start + QUESTIONS_PER_PAGE
+                search_query = Question.query.filter(
+                    Question.question.ilike(f'%{search_term}%')).all()
+                formatted_search = [question.format()
+                                    for question in search_query]
+                return jsonify({
+                    "success": True,
+                    "questions": formatted_search[start:end],
+                    "total_results": len(search_query)
+                })
+            else:
+                new_question = Question(
+                    question=add_question,
+                    answer=new_answer,
+                    category=question_category,
+                    difficulty=new_difficulty_score
+                )
             new_question.insert()
             return jsonify({
                 "success": True,
@@ -142,7 +158,7 @@ def create_app(test_config=None):
 
             })
         except:
-            abort(405)
+            abort(422)
     """
     @TODO:
     Create a POST endpoint to get questions based on a search term.
@@ -153,26 +169,7 @@ def create_app(test_config=None):
     only question that include that string within their question.
     Try using the word "title" to start.
     """
-    @app.route('/questions/search', methods=['POST'])
-    def search_question():
-        body = request.get_json()
-        search_term = body.get('searchTerm', None)
-        try:
-            if search_term:
-                page = request.args.get('page', 1, type=int)
-                start = (page - 1) * QUESTIONS_PER_PAGE
-                end = start + QUESTIONS_PER_PAGE
-                search_query = Question.query.filter_by(
-                    Question.question.ilike('%'+search_term+'%')).all()
-                formatted_search = [question.format()
-                                    for question in search_query]
-                return jsonify({
-                    "success": True,
-                    "questions": formatted_search[start:end],
-                    "total_results": len(search_query)
-                })
-        except:
-            abort(404)
+
     """
     @TODO:
     Create a GET endpoint to get questions based on category.
@@ -202,10 +199,10 @@ def create_app(test_config=None):
     one question at a time is displayed, the user is allowed to answer
     and shown whether they were correct or not.
     """
-    
-    @app.route('/questions',methods=['POST'])
+    @app.route('/quizzes', methods=['POST'])
     def get_quiz_questions():
         pass
+
     """
     @TODO:
     Create error handlers for all expected errors
