@@ -34,11 +34,7 @@ def create_app(test_config=None):
     @TODO: Use the after_request decorator to set Access-Control-Allow
     """
 
-    """
-    @TODO:
-    Create an endpoint to handle GET requests
-    for all available categories.
-    """
+
     @app.route('/categories', methods=['GET'])
     def get_all_questions():
         try:
@@ -91,17 +87,12 @@ def create_app(test_config=None):
         except:
             abort(404)
 
-    """
-    @TODO:
-    Create an endpoint to DELETE question using a question ID.
 
-    TEST: When you click the trash icon next to a question, the question will be removed.
-    This removal will persist in the database and when you refresh the page.
-    """
     @app.route('/questions/<int:question_id>', methods=['DELETE'])
     def delete_question(question_id):
+        q_id=str(question_id)
         question = Question.query.filter(
-            Question.id == question_id).one_or_none()
+            Question.id == q_id).one_or_none()
         if question is None:
             abort(404)
         question.delete()
@@ -170,24 +161,20 @@ def create_app(test_config=None):
     Try using the word "title" to start.
     """
 
-    """
-    @TODO:
-    Create a GET endpoint to get questions based on category.
-
-    TEST: In the "List" tab / main screen, clicking on one of the
-    categories in the left column will cause only questions of that
-    category to be shown.
-    """
     @app.route('/categories/<int:category_id>/questions', methods=['GET'])
     def get_question_based_on_category(category_id):
-        questions = Question.query.filter(
-            Question.category == category_id).all()
+        try:
+            category=str(category_id)
+            questions = Question.query.filter(
+                Question.category == category).all()
 
-        return jsonify({
-            "success": True,
-            "questions": [question.format() for question in questions],
-            "total_questions": len(questions)
-        })
+            return jsonify({
+                "success": True,
+                "questions": [question.format() for question in questions],
+                "total_questions": len(questions)
+            })
+        except:
+            abort(404)
     """
     @TODO:
     Create a POST endpoint to get questions to play the quiz.
@@ -203,11 +190,7 @@ def create_app(test_config=None):
     def get_quiz_questions():
         pass
 
-    """
-    @TODO:
-    Create error handlers for all expected errors
-    including 404 and 422.
-    """
+
 
     @app.errorhandler(404)
     def not_found(error):
@@ -225,12 +208,12 @@ def create_app(test_config=None):
             "message": "Unprocessable"
         }), 422
 
-    @app.errorhandler(405)
+    @app.errorhandler(400)
     def method_not_allowed(error):
         return jsonify({
             "success": False,
-            "error": 405,
-            "message": "Method Not Allowed"
-        }), 405
+            "error": 400,
+            "message": "Bad Request"
+        }), 400
 
     return app
