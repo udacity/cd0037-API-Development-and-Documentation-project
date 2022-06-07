@@ -30,20 +30,17 @@ def create_app(test_config=None):
     @TODO: Set up CORS. Allow '*' for origins. Delete the sample route after completing the TODOs
     """
 
+    myname = "cleophas"
+    z = ("a"+myname)[1:]
     """
     @TODO: Use the after_request decorator to set Access-Control-Allow
     """
-
 
     @app.route('/categories', methods=['GET'])
     def get_all_questions():
         try:
             categories = Category.query.order_by(Category.id).all()
 
-            # for category in categories:
-            #     formatted_Categories={
-            #         category.id:category.type
-            #     }
             formatted_Categories = {
                 category.id: category.type for category in categories}
             return jsonify({
@@ -87,10 +84,9 @@ def create_app(test_config=None):
         except:
             abort(404)
 
-
     @app.route('/questions/<int:question_id>', methods=['DELETE'])
     def delete_question(question_id):
-        q_id=str(question_id)
+        q_id = str(question_id)
         question = Question.query.filter(
             Question.id == q_id).one_or_none()
         if question is None:
@@ -164,7 +160,7 @@ def create_app(test_config=None):
     @app.route('/categories/<int:category_id>/questions', methods=['GET'])
     def get_question_based_on_category(category_id):
         try:
-            category=str(category_id)
+            category = str(category_id)
             questions = Question.query.filter(
                 Question.category == category).all()
 
@@ -188,9 +184,27 @@ def create_app(test_config=None):
     """
     @app.route('/quizzes', methods=['POST'])
     def get_quiz_questions():
-        pass
+        body = request.get_json()
+        category = body['quiz_category']
+        previous_question = body['previuous_question']
+        category_id = category['id']
+        try:
+            if category_id == 0:
+                questions = Question.query.filter(
+                    Question.id.not_in(previous_question)).all()
 
-
+            else:
+                questions = Question.query.filter(Question.id.not_in(
+                    previous_question), Question.category == category_id).all()
+            question = None
+            if questions:
+                question = random.choice(questions)
+            return jsonify({
+                "success": True,
+                "question": question.format()
+            })
+        except:
+            abort(404)
 
     @app.errorhandler(404)
     def not_found(error):
