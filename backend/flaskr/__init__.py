@@ -27,9 +27,6 @@ def create_app(test_config=None):
                              'GET,POST,OPTIONS,DELETE')
 
         return response
-    """
-    @TODO: Set up CORS. Allow '*' for origins. Delete the sample route after completing the TODOs
-    """
 
     @app.route('/categories', methods=['GET'])
     def get_all_questions():
@@ -150,44 +147,36 @@ def create_app(test_config=None):
             })
         except:
             abort(404)
-  
+
     @app.route('/quizzes', methods=['POST'])
     def get_quiz_questions():
         body = request.get_json()
-        category = body.get('quiz_category', None)
-        previous_question = body.get('previous_questions')
-        
+        category = body.get('quiz_category')
+        previous_questions = body.get('previous_questions')
         try:
-            # if no category specified use the ALL category
+
             if category['id'] == 0:
-                questions = Question.query.all()
+                questions = Question.query.filter(
+                    Question.id.notin_(previous_questions)).all()
             else:
 
-                questions = Question.query.filter(
-                    Question.category == category['id']).all()
+                questions = Question.query.filter(Question.id.notin_(
+                    previous_questions), Question.category == category['id']).all()
 
-                # return random questions from start=0, end len-1 of questions
-            def random_questions():
-                return questions[random.randint(0, len(questions)-1)]
-
-                # generate random questions for the next question
-            next_question = random_questions()
-
-            not_previous = True
-            # get qustions not in previous category
-            while (not_previous):
-                if next_question.id in previous_question:
-                    next_question = random_questions()
-                else:
-                    not_previous = False
+                def random_question():
+                    return random.randint(0, len(questions)-1)
+            next_question = None
+            if len(questions) > 0:
+                randomized = random_question()
+                next_question = questions[randomized].format()
             return jsonify({
-                "success": True,
-                "question": next_question.format()
-            })
+                'success': True,
+                'question': next_question,
 
+            })
         except:
             abort(400)
-            
+
 # Error Handlers
 
     @app.errorhandler(404)

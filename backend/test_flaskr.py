@@ -78,12 +78,12 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(data['message'], 'Not Found')
 
     def test_delete_question(self):
-        res = self.client().delete('/questions/24')
+        res = self.client().delete('/questions/12')
         data = json.loads(res.data)
-        question = Question.query.filter(Question.id == 24).one_or_none()
+        question = Question.query.filter(Question.id == 12).one_or_none()
         self.assertEqual(res.status_code, 200)
         self.assertEqual(data['success'], True)
-        self.assertEqual(data['delete_id'], 24)
+        self.assertEqual(data['delete_id'], 12)
         self.assertEqual(question, None)
 
     def test_failed_to_delete(self):
@@ -145,18 +145,7 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(data['success'], False)
         self.assertEqual(data['message'], 'Not Found')
 
-    def test_quiz_questions(self):
-        res=self.client().post('/quizzes',json={
-            'previous_questions':[],
-            'current_category':{'id':'5',
-            'type':'Entertainment'}
-        })
 
-        data=json.loads(res.data)
-        self.assertEqual(res.status_code,200)
-        self.assertEqual(data['success'],True)
-        self.assertTrue(data['question'])
-        self.assertEqual(data['question']['category'],5)
 
 
 # Make the tests conveniently executable
