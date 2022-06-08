@@ -358,6 +358,6 @@ The API returns three types of errors
 * Cleophas Kadima
 ### Acknowledgements
 * Udacity 
-## Testing
+
 
 
