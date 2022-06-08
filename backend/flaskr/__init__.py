@@ -30,11 +30,6 @@ def create_app(test_config=None):
     @TODO: Set up CORS. Allow '*' for origins. Delete the sample route after completing the TODOs
     """
 
-    myname = "cleophas"
-    z = ("a"+myname)[1:]
-    """
-    @TODO: Use the after_request decorator to set Access-Control-Allow
-    """
 
     @app.route('/categories', methods=['GET'])
     def get_all_questions():
@@ -53,11 +48,6 @@ def create_app(test_config=None):
             abort(404)
 
     """
-    @TODO:
-    Create an endpoint to handle GET requests for questions,
-    including pagination (every 10 questions).
-    This endpoint should return a list of questions,
-    number of total questions, current category, categories.
 
     TEST: At this point, when you start the application
     you should see questions and categories generated,
@@ -67,6 +57,7 @@ def create_app(test_config=None):
     @app.route('/questions', methods=['GET'])
     def get_paginated_questions():
         try:
+            #get all questions but in a paginated format
             page = request.args.get('page', 1, type=int)
             start = (page - 1) * QUESTIONS_PER_PAGE
             end = start + QUESTIONS_PER_PAGE
@@ -86,6 +77,7 @@ def create_app(test_config=None):
 
     @app.route('/questions/<int:question_id>', methods=['DELETE'])
     def delete_question(question_id):
+
         q_id = str(question_id)
         question = Question.query.filter(
             Question.id == q_id).one_or_none()
@@ -116,7 +108,7 @@ def create_app(test_config=None):
         new_difficulty_score = body.get('difficulty', None)
         search_term = body.get('searchTerm', None)
         try:
-
+            #check if there's a search_term in body
             if search_term:
                 page = request.args.get('page', 1, type=int)
                 start = (page - 1) * QUESTIONS_PER_PAGE
@@ -160,6 +152,7 @@ def create_app(test_config=None):
     @app.route('/categories/<int:category_id>/questions', methods=['GET'])
     def get_question_based_on_category(category_id):
         try:
+            #convert category_id to a string to validate tests as its passed as a string
             category = str(category_id)
             questions = Question.query.filter(
                 Question.category == category).all()
@@ -185,26 +178,40 @@ def create_app(test_config=None):
     @app.route('/quizzes', methods=['POST'])
     def get_quiz_questions():
         body = request.get_json()
-        category = body['quiz_category']
-        previous_question = body['previuous_question']
+        category = body.get('quiz_category',None)
+        previous_question = body.get('previous_questions')
         category_id = category['id']
         try:
+            #if no category specified use the ALL category
             if category_id == 0:
-                questions = Question.query.filter(
-                    Question.id.not_in(previous_question)).all()
-
+                questions = Question.query.all()
             else:
-                questions = Question.query.filter(Question.id.not_in(
-                    previous_question), Question.category == category_id).all()
-            question = None
-            if questions:
-                question = random.choice(questions)
+                
+                questions=Question.query.filter(Question.category==category_id).all()
+
+                #return random questions from start=0, end len-1 of questions
+            def random_questions():
+                    return questions[random.randint(0,len(questions)-1)]
+
+                #generate random questions for the next question
+            next_question=random_questions()
+
+            not_previous=True
+            #get qustions not in previous category
+            while (not_previous):
+                if next_question.id in previous_question:
+                    next_question=random_questions()
+                else:
+                    not_previous=False
             return jsonify({
-                "success": True,
-                "question": question.format()
+                "success":True,
+                "question":next_question.format()
             })
+                
+
+
         except:
-            abort(404)
+            abort(400)
 
     @app.errorhandler(404)
     def not_found(error):
@@ -219,7 +226,7 @@ def create_app(test_config=None):
         return jsonify({
             "success": False,
             "error": 422,
-            "message": "Unprocessable"
+            "message": "Not processable"
         }), 422
 
     @app.errorhandler(400)

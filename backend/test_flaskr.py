@@ -132,6 +132,19 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(data['success'], False)
         self.assertEqual(data['message'], 'Not Found')
 
+    def test_quiz_questions(self):
+        res=self.client().post('/quizzes',json={
+            'previous_questions':[],
+            'current_category':{'id':'5',
+            'type':'Entertainment'}
+        })
+
+        data=json.loads(res.data)
+        self.assertEqual(res.status_code,200)
+        self.assertEqual(data['success'],True)
+        self.assertTrue(data['question'])
+        self.assertEqual(data['question']['category'],5)
+
 
 # Make the tests conveniently executable
 if __name__ == "__main__":
