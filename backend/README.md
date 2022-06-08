@@ -354,9 +354,9 @@ The API returns three types of errors
 }
 ```
 
-### Authors
+## Authors
 * Cleophas Kadima
-### Acknowledgements
+## Acknowledgements
 * Udacity 
 
 
