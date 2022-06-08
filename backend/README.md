@@ -73,11 +73,21 @@ One note before you delve into your tasks: for each endpoint, you are expected t
 
 ## API Reference
 
-###Getting started
+### Getting started
 * Backend base URL : `http://127.0.0.1:5000/`
 * Front end base URL: `http://127.0.0.1:3000/`
 * Authentication : Authentication and API keys have not been used in this application
 
+### Testing
+
+To deploy the tests, run
+
+```bash
+dropdb trivia_test
+createdb trivia_test
+psql trivia_test < trivia.psql
+python test_flaskr.py
+```
 
 ### Error Handling
 Errors are returned as json object in the following format
@@ -201,6 +211,7 @@ The API returns three types of errors
   "total_questions": 27
 }
 ```
+
 `DELETE '/questions/{question_id}`
 * Deletes the question of the given id if it exists
 * Returns a success value, id of the deleted question and total number of questions
@@ -358,6 +369,4 @@ The API returns three types of errors
 * Cleophas Kadima
 ## Acknowledgements
 * Udacity 
-
-
 
