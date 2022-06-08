@@ -150,16 +150,13 @@ def create_app(test_config=None):
             })
         except:
             abort(404)
-    """
-    TEST: In the "Play" tab, after a user selects "All" or a category,
-    one question at a time is displayed, the user is allowed to answer
-    and shown whether they were correct or not.
-    """
+  
     @app.route('/quizzes', methods=['POST'])
     def get_quiz_questions():
         body = request.get_json()
         category = body.get('quiz_category', None)
         previous_question = body.get('previous_questions')
+        
         try:
             # if no category specified use the ALL category
             if category['id'] == 0:
@@ -190,6 +187,8 @@ def create_app(test_config=None):
 
         except:
             abort(400)
+            
+# Error Handlers
 
     @app.errorhandler(404)
     def not_found(error):
