@@ -3,8 +3,12 @@ from sqlalchemy import Column, String, Integer, create_engine
 from flask_sqlalchemy import SQLAlchemy
 import json
 
+# get hidden username and password from local environment. See env_example for more info
+DB_USERNAME = os.getenv("DB_USERNAME")
+DB_PASSWORD = os.getenv("DB_PASSWORD")
+
 database_name = 'trivia'
-database_path = 'postgresql://fodela:test123@{}/{}'.format('localhost:5432', database_name)
+database_path = 'postgresql://{}:{}@{}/{}'.format(DB_USERNAME, DB_PASSWORD, 'localhost:5432', database_name)
 
 db = SQLAlchemy()
 
