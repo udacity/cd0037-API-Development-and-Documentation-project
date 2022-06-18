@@ -1,21 +1,39 @@
 import os
+from sre_parse import CATEGORIES
 from sqlalchemy import Column, String, Integer, create_engine
 from flask_sqlalchemy import SQLAlchemy
 import json
+from dotenv import load_dotenv
+
+# look for a file named .env and load my database username and password
+load_dotenv()
 
 # get hidden username and password from local environment. See env_example for more info
 DB_USERNAME = os.getenv("DB_USERNAME")
 DB_PASSWORD = os.getenv("DB_PASSWORD")
 
-database_name = 'trivia'
-database_path = 'postgresql://{}:{}@{}/{}'.format(DB_USERNAME, DB_PASSWORD, 'localhost:5432', database_name)
+CATEGORIES_PER_PAGE = 10
+
+database_name = "trivia"
+database_path = "postgresql://{}:{}@{}/{}".format(
+    DB_USERNAME, DB_PASSWORD, "localhost:5432", database_name
+)
 
 db = SQLAlchemy()
+
+
+def paginate_categories(request, selection):
+    page = request.args.get("page", 1, type=int)
+    start = (page - 1) * CATEGORIES_PER_PAGE
+    end = start + CATEGORIES_PER_PAGE
+
 
 """
 setup_db(app)
     binds a flask application and a SQLAlchemy service
 """
+
+
 def setup_db(app, database_path=database_path):
     app.config["SQLALCHEMY_DATABASE_URI"] = database_path
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
@@ -23,12 +41,15 @@ def setup_db(app, database_path=database_path):
     db.init_app(app)
     db.create_all()
 
+
 """
 Question
 
 """
+
+
 class Question(db.Model):
-    __tablename__ = 'questions'
+    __tablename__ = "questions"
 
     id = Column(Integer, primary_key=True)
     question = Column(String)
@@ -55,19 +76,22 @@ class Question(db.Model):
 
     def format(self):
         return {
-            'id': self.id,
-            'question': self.question,
-            'answer': self.answer,
-            'category': self.category,
-            'difficulty': self.difficulty
-            }
+            "id": self.id,
+            "question": self.question,
+            "answer": self.answer,
+            "category": self.category,
+            "difficulty": self.difficulty,
+        }
+
 
 """
 Category
 
 """
+
+
 class Category(db.Model):
-    __tablename__ = 'categories'
+    __tablename__ = "categories"
 
     id = Column(Integer, primary_key=True)
     type = Column(String)
@@ -76,7 +100,4 @@ class Category(db.Model):
         self.type = type
 
     def format(self):
-        return {
-            'id': self.id,
-            'type': self.type
-            }
+        return {"id": self.id, "type": self.type}
