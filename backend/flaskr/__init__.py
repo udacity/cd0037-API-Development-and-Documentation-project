@@ -1,6 +1,6 @@
-from crypt import methods
-from distutils.log import error
-import json
+# from crypt import methods
+# from distutils.log import error
+# import json
 import os
 import sys
 from flask import Flask, request, abort, jsonify
@@ -94,12 +94,11 @@ def create_app(test_config=None):
         return jsonify({
             'deleted': question_id
         })
+
     """
-    @TODO:
     Create an endpoint to POST a new question,
     which will require the question and answer text,
     category, and difficulty score.
-
     TEST: When you submit a question on the "Add" tab,
     the form will clear and the question will appear at the end of the last page
     of the questions list in the "List" tab.
@@ -111,23 +110,20 @@ def create_app(test_config=None):
         if body is None:
             abort(400)
 
-    """
-    @TODO:
-    Create a POST endpoint to get questions based on a search term.
-    It should return any questions for whom the search term
-    is a substring of the question.
-
-    TEST: Search by any phrase. The questions list will update to include
-    only question that include that string within their question.
-    Try using the word "title" to start.
-    """
-    @app.route('/questions', methods=['POST'])
-    def get_question():
-        body = request.get_json()
-        
+        """
+        @TODO:
+        Create a POST endpoint to get questions based on a search term.
+        It should return any questions for whom the search term
+        is a substring of the question.
+        TEST: Search by any phrase. The questions list will update to include
+        only question that include that string within their question.
+        Try using the word "title" to start.
+        """
         if 'searchTerm' in body:
             search_term = body.get('searchTerm', '').strip()
-            questions = Question.query.filter(Question.question.ilike('%' + search_term + '%')).all()
+            questions = Question.query.filter(
+                Question.question.ilike('%' + search_term + '%')).all()
+
             questions = [question.format() for question in questions]
 
             return jsonify({
@@ -135,6 +131,7 @@ def create_app(test_config=None):
                 'totalQuestions': len(questions),
                 'currentCategory': questions[0]['category'] if len(questions) else ""
             })
+
         elif 'question' in body and 'answer' in body and 'difficulty' in body and 'category' in body:
             question = body.get('question', None)
             answer = body.get('answer', None)
@@ -142,7 +139,8 @@ def create_app(test_config=None):
             category = body.get('category', None)
 
             try:
-                new_question = Question(question=question, answer=answer, difficulty=difficulty, category=category)
+                new_question = Question(
+                    question=question, answer=answer, difficulty=difficulty, category=category)
                 new_question.insert()
 
             except:
@@ -153,6 +151,7 @@ def create_app(test_config=None):
             })
         else:
             abort(400)
+
     """
     @TODO:
     Create a GET endpoint to get questions based on category.
@@ -248,7 +247,7 @@ def create_app(test_config=None):
             "message": "bad request"
         }), 400
 
-    @app.errorhandler(error)
+    @app.errorhandler(405)
     def not_found(error):
         return jsonify({
             "success": False,
@@ -256,7 +255,7 @@ def create_app(test_config=None):
             "message": "method not allowed"
         }), 405
 
-    @app.errorhandler(error)
+    @app.errorhandler(500)
     def not_found(error):
         return jsonify({
             "success": False,
