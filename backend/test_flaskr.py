@@ -24,7 +24,7 @@ class TriviaTestCase(unittest.TestCase):
         self.app = create_app()
         self.client = self.app.test_client
         self.database_name = "trivia_test"
-        self.database_path = "postgres://{}:{}@{}/{}".format(
+        self.database_path = "postgresql://{}:{}@{}/{}".format(
             DB_USERNAME, DB_PASSWORD, "localhost:5432", self.database_name
         )
         setup_db(self.app, self.database_path)
@@ -44,33 +44,47 @@ class TriviaTestCase(unittest.TestCase):
     TODO
     Write at least one test for each test for successful operation and for expected errors.
     """
-
-    def test_get_paginated_categories(self):
+    
+    def test_get_all_categories(self):
         # get all categories data
-        categories = self.client().get("/categories")
+        res = self.client().get("/categories")
 
         # convert data into json format
-        data = json.loads(categories.data)
+        data = json.loads(res.data)
 
         # Check validity of the data
         # Check success
         self.assertEqual(data["success"], True)
         # Check status code
-        self.assertEqual(categories.status_code, 200)
+        self.assertEqual(res.status_code, 200)
         # Ensure that there are categories
         self.assertTrue(len(data["categories"]))
 
     def test_get_questions(self):
-        questions = self.client().get("/questions")
-        data = json.loads(questions.data)
+        res = self.client().get("/questions")
+        data = json.loads(res.data)
 
         # check validity of the data
         self.assertEqual(data["success"], True)
         # Check status code
-        self.assertEqual(questions.status_code, 200)
+        self.assertEqual(res.status_code, 200)
         # Ensure that there are questions
         self.assertTrue(len(data["questions"]))
+    
+    def test_delete_specific_question(self):
+        res = self.client().delete("/questions/5")
+        data = json.loads(res.data)
 
+        deleted_question = Question.query.filter(Question.id == 5).one_or_none()
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data["success"], True)
+        self.assertEqual(data["deleted"], 5)
+        self.assertTrue(data["total_questions"])
+        self.assertTrue(len(data["questions"]))
+        self.assertEqual(deleted_question, None)
+
+    
 
 # Make the tests conveniently executable
 if __name__ == "__main__":
