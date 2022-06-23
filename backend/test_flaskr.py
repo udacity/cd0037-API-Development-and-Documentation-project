@@ -36,6 +36,13 @@ class TriviaTestCase(unittest.TestCase):
             # create all tables
             self.db.create_all()
 
+        self.new_question = {
+            "question": "Who is the best programmer of all time?",
+            "answer": "Fodela",
+            "category": 4,
+            "difficulty": 1,
+        }
+
     def tearDown(self):
         """Executed after reach test"""
         pass
@@ -44,8 +51,8 @@ class TriviaTestCase(unittest.TestCase):
     TODO
     Write at least one test for each test for successful operation and for expected errors.
     """
-    
-    def test_get_all_categories(self):
+
+    def test_get_paginated_categories(self):
         # get all categories data
         res = self.client().get("/categories")
 
@@ -60,7 +67,7 @@ class TriviaTestCase(unittest.TestCase):
         # Ensure that there are categories
         self.assertTrue(len(data["categories"]))
 
-    def test_get_questions(self):
+    def test_get_all_questions(self):
         res = self.client().get("/questions")
         data = json.loads(res.data)
 
@@ -70,21 +77,30 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(res.status_code, 200)
         # Ensure that there are questions
         self.assertTrue(len(data["questions"]))
-    
-    def test_delete_specific_question(self):
-        res = self.client().delete("/questions/5")
-        data = json.loads(res.data)
 
-        deleted_question = Question.query.filter(Question.id == 5).one_or_none()
+    # def test_delete_specific_question(self):
+    #     res = self.client().delete("/questions/5")
+    #     data = json.loads(res.data)
+
+    #     deleted_question = Question.query.filter(Question.id == 5).one_or_none()
+
+    #     self.assertEqual(res.status_code, 200)
+    #     self.assertEqual(data["success"], True)
+    #     self.assertEqual(data["deleted"], 5)
+    #     self.assertTrue(data["total_questions"])
+    #     self.assertTrue(len(data["questions"]))
+    #     self.assertEqual(deleted_question, None)
+
+    def test_post_new_question(self):
+        res = self.client().post("/questions", json=self.new_question)
+        data = json.loads(res.data)
 
         self.assertEqual(res.status_code, 200)
         self.assertEqual(data["success"], True)
-        self.assertEqual(data["deleted"], 5)
-        self.assertTrue(data["total_questions"])
+        self.assertTrue(data["created"])
         self.assertTrue(len(data["questions"]))
-        self.assertEqual(deleted_question, None)
+        self.assertTrue(data["total_questions"])
 
-    
 
 # Make the tests conveniently executable
 if __name__ == "__main__":
