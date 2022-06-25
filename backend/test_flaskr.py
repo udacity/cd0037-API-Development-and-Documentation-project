@@ -42,6 +42,12 @@ class TriviaTestCase(unittest.TestCase):
             "category": 4,
             "difficulty": 1,
         }
+        self.bad_question = {
+            "question": None,
+            "answer": None,
+            "category": None,
+            "difficulty": None,
+        }
 
     def tearDown(self):
         """Executed after reach test"""
@@ -122,6 +128,16 @@ class TriviaTestCase(unittest.TestCase):
         self.assertTrue(data["created"])
         self.assertTrue(len(data["questions"]))
         self.assertTrue(data["total_questions"])
+
+    def test_400_if_question_detail_is_missing(self):
+        res = self.client().post('/questions', json=self.bad_question)
+        data = json.loads(res.data)
+
+        self.assertEqual(data['success'], False)
+        # check error code
+        self.assertEqual(res.status_code, 400)
+        # check message
+        self.assertEqual(data["message"], "bad request : A detail of the new question is not defined")
 
     def test_search_questions(self):
         test_data = {
