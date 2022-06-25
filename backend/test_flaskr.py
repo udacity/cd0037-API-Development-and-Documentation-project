@@ -67,6 +67,16 @@ class TriviaTestCase(unittest.TestCase):
         # Ensure that there are categories
         self.assertTrue(len(data["categories"]))
 
+    def test_404_sent_beyond_valid_page(self):
+        res = self.client().get("/questions?page=9999")
+        data = json.loads(res.data)
+
+        self.assertEqual(data['success'], False)
+        # check error code
+        self.assertEqual(res.status_code, 404)
+        # check message
+        self.assertEqual(data["message"], "resource not found : No questions on requested page")
+
     def test_get_all_questions(self):
         res = self.client().get("/questions")
         data = json.loads(res.data)
