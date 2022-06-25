@@ -241,6 +241,48 @@ def create_app(test_config=None):
             except Exception as err:
                 abort(err.code)
 
+    """
+    @TODO:
+    Create a GET endpoint to get questions based on category.
+
+    TEST: In the "List" tab / main screen, clicking on one of the
+    categories in the left column will cause only questions of that
+    category to be shown.
+    """
+
+    @app.route("/categories/<int:category_id>/questions")
+    def get_questions_by_category(category_id):
+        
+        current_category_query = Category.query.get(category_id)
+
+        # abort if there is no such category
+        if not current_category_query:
+            abort(404, "Selected category does not exist")
+        
+        else:
+            try:
+                current_category = current_category_query.type
+
+
+                categorized_questions_query = Question.query.filter(
+                    Question.category == category_id
+                )
+
+                categorized_questions = [
+                    question.format() for question in categorized_questions_query
+                ]
+                total_questions = len(categorized_questions)
+
+                return jsonify(
+                    {
+                        "success": True,
+                        "questions": categorized_questions,
+                        "current_category": current_category,
+                        "total_questions": total_questions,
+                    }
+                )
+            except Exception as err:
+                abort(err.code)
 
 
     return app
