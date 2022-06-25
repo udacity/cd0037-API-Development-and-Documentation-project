@@ -48,6 +48,12 @@ class TriviaTestCase(unittest.TestCase):
             "category": None,
             "difficulty": None,
         }
+        self.search_term = {
+            "searchTerm":"who"
+        }
+        self.bad_search_term = {
+            "searchTerm":None
+        }
 
     def tearDown(self):
         """Executed after reach test"""
@@ -140,16 +146,23 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(data["message"], "bad request : A detail of the new question is not defined")
 
     def test_search_questions(self):
-        test_data = {
-            "searchTerm": "who"
-        }
-        res = self.client().post("questions/results",json=test_data)
+        res = self.client().post("questions/results",json=self.search_term)
         data = json.loads(res.data)
 
         self.assertEqual(data["success"], True)
         self.assertEqual(res.status_code, 200)
         self.assertTrue(data["total_questions"])
         self.assertTrue(len(data["categories"]))
+
+    def test_400_undefined_search_term(self):
+        res = self.client().post("questions/results", json=self.bad_search_term)
+        data = json.loads(res.data)
+
+        self.assertEqual(data['success'], False)
+        # check error code
+        self.assertEqual(res.status_code, 400)
+        # check message
+        self.assertEqual(data["message"], "bad request : Search term is undefined")
         
 
     def test_get_questions_by_category(self):
