@@ -55,7 +55,7 @@ class TriviaTestCase(unittest.TestCase):
             "searchTerm":None
         }
         self.quiz_data =  {
-            "quiz_category": {"id": 2},
+            "quiz_category": {"id": 0},
             "previous_questions": [1, 2]
         }
 
@@ -196,6 +196,8 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(data["success"], True)
         self.assertEqual(res.status_code, 200)
         self.assertTrue(len(data["question"]))
+        # Ensure that a question is not repeated
+        self.assertTrue(data["question"]["id"] not in data["previous_questions"])
 
 # Make the tests conveniently executable
 if __name__ == "__main__":
