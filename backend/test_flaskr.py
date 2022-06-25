@@ -67,15 +67,6 @@ class TriviaTestCase(unittest.TestCase):
         # Ensure that there are categories
         self.assertTrue(len(data["categories"]))
 
-    def test_404_sent_beyond_valid_page(self):
-        res = self.client().get("/questions?page=9999")
-        data = json.loads(res.data)
-
-        self.assertEqual(data['success'], False)
-        # check error code
-        self.assertEqual(res.status_code, 404)
-        # check message
-        self.assertEqual(data["message"], "resource not found : No questions on requested page")
 
     def test_get_all_questions(self):
         res = self.client().get("/questions")
@@ -87,6 +78,16 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(res.status_code, 200)
         # Ensure that there are questions
         self.assertTrue(len(data["questions"]))
+    
+    def test_404_sent_beyond_valid_page(self):
+        res = self.client().get("/questions?page=9999")
+        data = json.loads(res.data)
+
+        self.assertEqual(data['success'], False)
+        # check error code
+        self.assertEqual(res.status_code, 404)
+        # check message
+        self.assertEqual(data["message"], "resource not found : No questions on requested page")
 
     def test_delete_specific_question(self):
         last_question_id = Question.query.all()[-1].format()["id"]
@@ -101,6 +102,16 @@ class TriviaTestCase(unittest.TestCase):
         self.assertTrue(data["total_questions"])
         self.assertTrue(len(data["questions"]))
         self.assertEqual(deleted_question, None)
+
+    def test_404_book_to_be_deleted_does_not_exist(self):
+        res = self.client().delete("/questions/9999")
+        data = json.loads(res.data)
+
+        self.assertEqual(data['success'], False)
+        # check error code
+        self.assertEqual(res.status_code, 422)
+        # check message
+        self.assertEqual(data["message"], "unprocessable : 404 Not Found: Question with id: 9999 does not exist")
 
     def test_post_new_question(self):
         res = self.client().post("/questions", json=self.new_question)
