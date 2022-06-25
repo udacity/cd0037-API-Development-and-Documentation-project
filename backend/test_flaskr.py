@@ -54,6 +54,10 @@ class TriviaTestCase(unittest.TestCase):
         self.bad_search_term = {
             "searchTerm":None
         }
+        self.quiz_data =  {
+            "quiz_category": {"id": 2},
+            "previous_questions": [1, 2]
+        }
 
     def tearDown(self):
         """Executed after reach test"""
@@ -174,12 +178,19 @@ class TriviaTestCase(unittest.TestCase):
         self.assertTrue(len(data["questions"]))
         self.assertTrue(data["total_questions"]) 
 
+    def test_404_if_category_does_not_exist(self):
+        res = self.client().post("questions/results", json=self.bad_search_term)
+        data = json.loads(res.data)
+
+        self.assertEqual(data['success'], False)
+        # check error code
+        self.assertEqual(res.status_code, 400)
+        # check message
+        self.assertEqual(data["message"], "bad request : Search term is undefined")
+
     def test_get_quiz_questions(self):
-        test_data =  {
-            "quiz_category": {"id": 2},
-            "previous_questions": [1, 2]
-        }  
-        res = self.client().post("/quizzes", json=test_data)
+          
+        res = self.client().post("/quizzes", json=self.quiz_data)
         data = json.loads(res.data)
 
         self.assertEqual(data["success"], True)
