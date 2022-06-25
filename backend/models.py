@@ -22,10 +22,7 @@ database_path = "postgresql://{}:{}@{}/{}".format(
 db = SQLAlchemy()
 
 
-def paginate_categories(request, selection):
-    page = request.args.get("page", 1, type=int)
-    start = (page - 1) * CATEGORIES_PER_PAGE
-    end = start + CATEGORIES_PER_PAGE
+
 
 
 """
