@@ -58,6 +58,11 @@ class TriviaTestCase(unittest.TestCase):
             "quiz_category": {"id": 0},
             "previous_questions": [1, 2]
         }
+        self.bad_quiz_data =  {
+            "quiz_category": {"id": None},
+            "previous_questions": [1, 2]
+        }
+        
 
     def tearDown(self):
         """Executed after reach test"""
@@ -198,6 +203,17 @@ class TriviaTestCase(unittest.TestCase):
         self.assertTrue(len(data["question"]))
         # Ensure that a question is not repeated
         self.assertTrue(data["question"]["id"] not in data["previous_questions"])
+    
+    def test_400_invalid_category_selected(self):
+        
+        res = self.client().post("/quizzes", json=self.bad_quiz_data)
+        data = json.loads(res.data)
+
+        self.assertEqual(data['success'], False)
+        # check error code
+        self.assertEqual(res.status_code, 400)
+        # check message
+        self.assertEqual(data["message"], "bad request : Invalid category selected")
 
 # Make the tests conveniently executable
 if __name__ == "__main__":
