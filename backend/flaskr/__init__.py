@@ -283,6 +283,53 @@ def create_app(test_config=None):
                 )
             except Exception as err:
                 abort(err.code)
+    """
+    @TODO:
+    Create a POST endpoint to get questions to play the quiz.
+    This endpoint should take category and previous question parameters
+    and return a random questions within the given category,
+    if provided, and that is not one of the previous questions.
+
+    TEST: In the "Play" tab, after a user selects "All" or a category,
+    one question at a time is displayed, the user is allowed to answer
+    and shown whether they were correct or not.
+    """
+
+    @app.route("/quizzes", methods=["POST"])
+    def get_quiz_questions():
+        body = request.get_json()
+        
+        category = body.get("quiz_category")["id"]
+
+
+        if category is None:
+            abort(400, "Invalid category selected")
+        
+        else:
+            category_id = int(category)
+            
+            previous_questions = body.get("previous_questions", None)
+            try:
+                if category_id == 0:
+                    # get all questions
+                    categorized_questions = get_paginated_questions().get_json()["questions"]
+                    if len(previous_questions) < 5:
+                        question = random.choice([qst for qst in categorized_questions if qst["id"] not in previous_questions])
+                    else:
+                        question = None
+
+                else:
+                    # get categorized question
+                    categorized_questions = get_questions_by_category(category_id).get_json()["questions"]
+                    if len(previous_questions) < len(categorized_questions):
+                        question = random.choice([qst for qst in categorized_questions if qst["id"] not in previous_questions])
+                    else: 
+                        question = None
+
+                return jsonify({"success": True, "question": question, "previous_questions": previous_questions})
+            except Exception as err:
+                abort(400)
+
 
 
     return app
