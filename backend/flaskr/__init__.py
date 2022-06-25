@@ -197,6 +197,50 @@ def create_app(test_config=None):
         except Exception as err:
             abort(err.code)
 
+    """
+    @TODO:
+    Create a POST endpoint to get questions based on a search term.
+    It should return any questions for whom the search term
+    is a substring of the question.
+
+    TEST: Search by any phrase. The questions list will update to include
+    only question that include that string within their question.
+    Try using the word "title" to start.
+    """
+
+    @app.route("/questions/results", methods=["POST"])
+    def search_questions():
+
+        body = request.get_json()
+        search_term = body.get("searchTerm")
+
+        if search_term is None:
+
+            abort(400, "Search term is undefined")
+        
+        else:
+            try:
+                categories = get_all_categories().get_json()["categories"]
+
+                result_query = Question.query.filter(
+                    Question.question.ilike(f"%{search_term}%")
+                ).all()
+
+                questions = [question.format() for question in result_query]
+
+                return jsonify(
+                    {
+                        "success": True,
+                        "questions": questions,
+                        "total_questions": len(result_query),
+                        "categories": categories,
+                        "current_category": None,
+                    }
+                )
+
+            except Exception as err:
+                abort(err.code)
+
 
 
     return app
