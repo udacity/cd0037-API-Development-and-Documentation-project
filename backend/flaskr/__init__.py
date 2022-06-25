@@ -138,6 +138,65 @@ def create_app(test_config=None):
             except Exception as err:
                 abort(err.code)
 
+    """
+    @TODO:
+    Create an endpoint to POST a new question,
+    which will require the question and answer text,
+    category, and difficulty score.
+
+    TEST: When you submit a question on the "Add" tab,
+    the form will clear and the question will appear at the end of the last page
+    of the questions list in the "List" tab.
+    """
+
+    @app.route("/questions", methods=["POST"])
+    def post_new_question():
+        
+        body = request.get_json()
+
+
+        # define the components of the question
+        qst_details = {
+
+        "new_question" : body.get("question", None),
+        "new_answer" : body.get("answer", None),
+        "new_category" : body.get("category", None),
+        "new_difficulty" : body.get("difficulty", None)
+        }
+
+        # raise error if any parameter is missing
+        for detail in qst_details:
+            if not qst_details[detail]:
+                abort(400, "A detail of the new question is not defined")
+
+
+            else:
+                question = Question(
+                question= qst_details["new_question"],
+                answer= qst_details["new_answer"],
+                category= qst_details["new_category"],
+                difficulty= qst_details["new_difficulty"],
+            )
+
+        try:
+            
+
+            question.insert()
+
+            all_questions = Question.query.order_by(Question.id).all()
+            current_questions = paginate_questions(request, all_questions)
+            return jsonify(
+                {
+                    "success": True,
+                    "created": question.id,
+                    "questions": current_questions,
+                    "total_questions": len(question.query.all()),
+                }
+            )
+
+        except Exception as err:
+            abort(err.code)
+
 
 
     return app
