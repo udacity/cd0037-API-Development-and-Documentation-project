@@ -48,21 +48,13 @@ class TriviaTestCase(unittest.TestCase):
             "category": None,
             "difficulty": None,
         }
-        self.search_term = {
-            "searchTerm":"who"
-        }
-        self.bad_search_term = {
-            "searchTerm":None
-        }
-        self.quiz_data =  {
-            "quiz_category": {"id": 0},
-            "previous_questions": [1, 2]
-        }
-        self.bad_quiz_data =  {
+        self.search_term = {"searchTerm": "who"}
+        self.bad_search_term = {"searchTerm": None}
+        self.quiz_data = {"quiz_category": {"id": 0}, "previous_questions": [1, 2]}
+        self.bad_quiz_data = {
             "quiz_category": {"id": None},
-            "previous_questions": [1, 2]
+            "previous_questions": [1, 2],
         }
-        
 
     def tearDown(self):
         """Executed after reach test"""
@@ -88,7 +80,6 @@ class TriviaTestCase(unittest.TestCase):
         # Ensure that there are categories
         self.assertTrue(len(data["categories"]))
 
-
     def test_get_all_questions(self):
         res = self.client().get("/questions")
         data = json.loads(res.data)
@@ -99,16 +90,18 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(res.status_code, 200)
         # Ensure that there are questions
         self.assertTrue(len(data["questions"]))
-    
+
     def test_404_sent_beyond_valid_page(self):
         res = self.client().get("/questions?page=9999")
         data = json.loads(res.data)
 
-        self.assertEqual(data['success'], False)
+        self.assertEqual(data["success"], False)
         # check error code
         self.assertEqual(res.status_code, 404)
         # check message
-        self.assertEqual(data["message"], "resource not found : No questions on requested page")
+        self.assertEqual(
+            data["message"], "resource not found : No questions on requested page"
+        )
 
     def test_delete_specific_question(self):
         last_question_id = Question.query.all()[-1].format()["id"]
@@ -128,11 +121,14 @@ class TriviaTestCase(unittest.TestCase):
         res = self.client().delete("/questions/9999")
         data = json.loads(res.data)
 
-        self.assertEqual(data['success'], False)
+        self.assertEqual(data["success"], False)
         # check error code
         self.assertEqual(res.status_code, 404)
         # check message
-        self.assertEqual(data["message"], "resource not found : Question with id: 9999 does not exist")
+        self.assertEqual(
+            data["message"],
+            "resource not found : Question with id: 9999 does not exist",
+        )
 
     def test_post_new_question(self):
         res = self.client().post("/questions", json=self.new_question)
@@ -145,17 +141,19 @@ class TriviaTestCase(unittest.TestCase):
         self.assertTrue(data["total_questions"])
 
     def test_400_if_question_detail_is_missing(self):
-        res = self.client().post('/questions', json=self.bad_question)
+        res = self.client().post("/questions", json=self.bad_question)
         data = json.loads(res.data)
 
-        self.assertEqual(data['success'], False)
+        self.assertEqual(data["success"], False)
         # check error code
         self.assertEqual(res.status_code, 400)
         # check message
-        self.assertEqual(data["message"], "bad request : A detail of the new question is not defined")
+        self.assertEqual(
+            data["message"], "bad request : A detail of the new question is not defined"
+        )
 
     def test_search_questions(self):
-        res = self.client().post("questions/results",json=self.search_term)
+        res = self.client().post("questions/results", json=self.search_term)
         data = json.loads(res.data)
 
         self.assertEqual(data["success"], True)
@@ -167,12 +165,11 @@ class TriviaTestCase(unittest.TestCase):
         res = self.client().post("questions/results", json=self.bad_search_term)
         data = json.loads(res.data)
 
-        self.assertEqual(data['success'], False)
+        self.assertEqual(data["success"], False)
         # check error code
         self.assertEqual(res.status_code, 400)
         # check message
         self.assertEqual(data["message"], "bad request : Search term is undefined")
-        
 
     def test_get_questions_by_category(self):
         res = self.client().get("/categories/1/questions")
@@ -181,20 +178,20 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(data["success"], True)
         self.assertEqual(res.status_code, 200)
         self.assertTrue(len(data["questions"]))
-        self.assertTrue(data["total_questions"]) 
+        self.assertTrue(data["total_questions"])
 
     def test_404_if_category_does_not_exist(self):
         res = self.client().post("questions/results", json=self.bad_search_term)
         data = json.loads(res.data)
 
-        self.assertEqual(data['success'], False)
+        self.assertEqual(data["success"], False)
         # check error code
         self.assertEqual(res.status_code, 400)
         # check message
         self.assertEqual(data["message"], "bad request : Search term is undefined")
 
     def test_get_quiz_questions(self):
-          
+
         res = self.client().post("/quizzes", json=self.quiz_data)
         data = json.loads(res.data)
 
@@ -203,17 +200,18 @@ class TriviaTestCase(unittest.TestCase):
         self.assertTrue(len(data["question"]))
         # Ensure that a question is not repeated
         self.assertTrue(data["question"]["id"] not in data["previous_questions"])
-    
+
     def test_400_invalid_category_selected(self):
-        
+
         res = self.client().post("/quizzes", json=self.bad_quiz_data)
         data = json.loads(res.data)
 
-        self.assertEqual(data['success'], False)
+        self.assertEqual(data["success"], False)
         # check error code
         self.assertEqual(res.status_code, 400)
         # check message
         self.assertEqual(data["message"], "bad request : Invalid category selected")
+
 
 # Make the tests conveniently executable
 if __name__ == "__main__":
