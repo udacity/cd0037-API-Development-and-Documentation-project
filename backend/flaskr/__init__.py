@@ -43,6 +43,31 @@ def create_app(test_config=None):
         )
         return response
 
+    """
+    @TODO:
+    Create an endpoint to handle GET requests
+    for all available categories.
+    """
+
+    @app.route("/categories")
+    def get_all_categories():
+        try:
+            categories = Category.query.all()
+            formatted_categories = [category.format() for category in categories]
+
+            # convert categories to dictionary
+            categories_dictionary = {
+                formatted_category["id"]: formatted_category["type"]
+                for formatted_category in formatted_categories
+            }
+
+            if len(categories) is None:
+                abort(404, "No category found")
+
+            return jsonify({"success": True, "categories": categories_dictionary})
+        except Exception as err:
+            abort(err.code)
+
 
 
     return app
