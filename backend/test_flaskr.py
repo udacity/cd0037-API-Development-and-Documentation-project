@@ -115,9 +115,9 @@ class TriviaTestCase(unittest.TestCase):
 
         self.assertEqual(data['success'], False)
         # check error code
-        self.assertEqual(res.status_code, 422)
+        self.assertEqual(res.status_code, 404)
         # check message
-        self.assertEqual(data["message"], "unprocessable : 404 Not Found: Question with id: 9999 does not exist")
+        self.assertEqual(data["message"], "resource not found : Question with id: 9999 does not exist")
 
     def test_post_new_question(self):
         res = self.client().post("/questions", json=self.new_question)
