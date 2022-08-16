@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import '../stylesheets/App.css';
 import Question from './Question';
 import Search from './Search';
-import $ from 'jquery';
 
 class QuestionView extends Component {
   constructor() {
@@ -21,23 +20,17 @@ class QuestionView extends Component {
   }
 
   getQuestions = () => {
-    $.ajax({
-      url: `/questions?page=${this.state.page}`, //TODO: update request URL
-      type: 'GET',
-      success: (result) => {
-        this.setState({
-          questions: result.questions,
-          totalQuestions: result.total_questions,
-          categories: result.categories,
-          currentCategory: result.current_category,
-        });
-        return;
-      },
-      error: (error) => {
-        alert('Unable to load questions. Please try your request again');
-        return;
-      },
-    });
+    fetch(`http://localhost:5000/questions?page=${this.state.page}`).then(resource => {
+      return resource.json();
+    }).then(result => {
+      this.setState({
+        questions: result.questions,
+        totalQuestions: result.total_questions,
+        categories: result.categories,
+      });
+    }).catch(error => {
+      alert('Unable to load questions. Please try your request again');
+    })
   };
 
   selectPage(num) {
@@ -64,64 +57,48 @@ class QuestionView extends Component {
   }
 
   getByCategory = (id) => {
-    $.ajax({
-      url: `/categories/${id}/questions`, //TODO: update request URL
-      type: 'GET',
-      success: (result) => {
-        this.setState({
-          questions: result.questions,
-          totalQuestions: result.total_questions,
-          currentCategory: result.current_category,
-        });
-        return;
-      },
-      error: (error) => {
-        alert('Unable to load questions. Please try your request again');
-        return;
-      },
-    });
+
+    fetch(`localhost:5000/category?category=${id}`).then(res => {
+      return res.json();
+    }).then(result => {
+      this.setState({
+        questions: result.questions,
+        totalQuestions: result.total_questions,
+        categories: result.categories,
+        currentCategory: id,
+      });
+    }).catch(error => {
+      alert('Unable to load categories. Please try your request again');
+    })
+
   };
 
   submitSearch = (searchTerm) => {
-    $.ajax({
-      url: `/questions`, //TODO: update request URL
-      type: 'POST',
-      dataType: 'json',
-      contentType: 'application/json',
-      data: JSON.stringify({ searchTerm: searchTerm }),
-      xhrFields: {
-        withCredentials: true,
-      },
-      crossDomain: true,
-      success: (result) => {
-        this.setState({
-          questions: result.questions,
-          totalQuestions: result.total_questions,
-          currentCategory: result.current_category,
-        });
-        return;
-      },
-      error: (error) => {
-        alert('Unable to load questions. Please try your request again');
-        return;
-      },
-    });
+    fetch(`localhost:5000/search?search=${searchTerm}`).then(res => {
+      return res.json();
+    }).then(result => {
+      this.setState({
+        questions: result.questions,
+        totalQuestions: result.total_questions,
+        categories: result.categories,
+      });
+    }).catch(error => {
+      alert('Unable to load questions. Please try your request again');
+    })
   };
 
   questionAction = (id) => (action) => {
     if (action === 'DELETE') {
       if (window.confirm('are you sure you want to delete the question?')) {
-        $.ajax({
-          url: `/questions/${id}`, //TODO: update request URL
-          type: 'DELETE',
-          success: (result) => {
-            this.getQuestions();
-          },
-          error: (error) => {
-            alert('Unable to load questions. Please try your request again');
-            return;
-          },
-        });
+        fetch(`http://localhost:5000/questions/${id}`, {
+          method: 'DELETE',
+        }).then(res => {
+          return res.json();
+        }).then(result => {
+          return result;
+        }).catch(error => {
+          alert('Unable to delete question. Please try your request again');
+        })
       }
     }
   };

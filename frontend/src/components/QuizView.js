@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import $ from 'jquery';
 import '../stylesheets/QuizView.css';
 
 const questionsPerPlay = 5;
@@ -20,18 +19,15 @@ class QuizView extends Component {
   }
 
   componentDidMount() {
-    $.ajax({
-      url: `/categories`, //TODO: update request URL
-      type: 'GET',
-      success: (result) => {
-        this.setState({ categories: result.categories });
-        return;
-      },
-      error: (error) => {
-        alert('Unable to load categories. Please try your request again');
-        return;
-      },
-    });
+    fetch('http://localhost:5000/categories').then(resource => {
+      return resource.json();
+    }).then(result => {
+      this.setState({
+        categories: result.categories,
+      });
+    }).catch(error => {
+      alert('Unable to load categories. Please try your request again');
+    })
   }
 
   selectCategory = ({ type, id = 0 }) => {
@@ -48,34 +44,18 @@ class QuizView extends Component {
       previousQuestions.push(this.state.currentQuestion.id);
     }
 
-    $.ajax({
-      url: '/quizzes', //TODO: update request URL
-      type: 'POST',
-      dataType: 'json',
-      contentType: 'application/json',
-      data: JSON.stringify({
-        previous_questions: previousQuestions,
-        quiz_category: this.state.quizCategory,
-      }),
-      xhrFields: {
-        withCredentials: true,
-      },
-      crossDomain: true,
-      success: (result) => {
-        this.setState({
-          showAnswer: false,
-          previousQuestions: previousQuestions,
-          currentQuestion: result.question,
-          guess: '',
-          forceEnd: result.question ? false : true,
-        });
-        return;
-      },
-      error: (error) => {
-        alert('Unable to load question. Please try your request again');
-        return;
-      },
-    });
+    fetch(`http://localhost:5000/quizzes/${this.state.quizCategory.type}/${this.state.quizCategory.id}`).then(resource => {
+      return resource.json();
+    }).then(result => {
+      this.setState({
+        currentQuestion: result.question,
+        previousQuestions,
+        showAnswer: false,
+        forceEnd: false,
+      });
+    }).catch(error => {
+      alert('Unable to load questions. Please try your request again');
+    })
   };
 
   submitGuess = (event) => {
