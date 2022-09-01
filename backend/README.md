@@ -67,6 +67,12 @@ One note before you delve into your tasks: for each endpoint, you are expected t
 8. Create a `POST` endpoint to get questions to play the quiz. This endpoint should take a category and previous question parameters and return a random questions within the given category, if provided, and that is not one of the previous questions.
 9. Create error handlers for all expected errors including 400, 404, 422, and 500.
 
+## API Reference
+
+### Getting Started
+- Base URL: At present this app can only be run locally and is not hosted as a base URL. The backend app is hosted at the default, `http://127.0.0.1:5000/`, which is set as a proxy in the frontend configuration. 
+- Authentication: This version of the application does not require authentication or API keys. 
+
 ## Documenting your Endpoints
 
 You will need to provide detailed documentation of your API endpoints including the URL, request parameters, and the response body. Use the example below as a reference.
@@ -78,7 +84,7 @@ You will need to provide detailed documentation of your API endpoints including 
 - Fetches a dictionary of categories in which the keys are the ids and the value is the corresponding string of the category
 - Request Arguments: None
 - Returns: An object with a single key, `categories`, that contains an object of `id: category_string` key: value pairs.
-
+Sample: `curl http://127.0.0.1:5000/categories`
 ```json
 {
   "1": "Science",
@@ -95,6 +101,7 @@ You will need to provide detailed documentation of your API endpoints including 
 - Fetches a paginated set of questions, a total number of questions, all categories and current category string.
 - Request Arguments: `page` - integer
 - Returns: An object with 10 paginated questions, total questions, object including all categories, and current category string
+Sample: `curl http://127.0.0.1:5000/questions?page=2`
 
 ```json
 {
@@ -127,6 +134,7 @@ You will need to provide detailed documentation of your API endpoints including 
 - Fetches questions for a cateogry specified by id request argument
 - Request Arguments: `id` - integer
 - Returns: An object with questions for the specified category, total questions, and current category string
+Sample: `curl http://127.0.0.1:5000/categories/1/questions`
 
 ```json
 {
@@ -151,7 +159,7 @@ You will need to provide detailed documentation of your API endpoints including 
 - Deletes a specified question using the id of the question
 - Request Arguments: `id` - integer
 - Returns: Does not need to return anything besides the appropriate HTTP status code. Optionally can return the id of the question. If you are able to modify the frontend, you can have it remove the question using the id instead of refetching the questions.
-
+Sample: `curl -X DELETE http://127.0.0.1:5000/questions/16`
 ---
 
 `POST '/api/v1.0/quizzes'`
@@ -186,6 +194,7 @@ You will need to provide detailed documentation of your API endpoints including 
 
 - Sends a post request in order to add a new question
 - Request Body:
+Sample: `curl http://127.0.0.1:5000/questions -X POST -H "Content-Type: application/json" -d '{"question":"new_question", "answer":"new_answer", "difficulty":"1", "category":"1"}'`
 
 ```json
 {
@@ -204,6 +213,7 @@ You will need to provide detailed documentation of your API endpoints including 
 
 - Sends a post request in order to search for a specific question by search term
 - Request Body:
+Sample: `curl http://127.0.0.1:5000/books/15 -X POST -H "Content-Type: application/json" -d '{"searchTerm":"title"}'`
 
 ```json
 {
@@ -228,10 +238,65 @@ You will need to provide detailed documentation of your API endpoints including 
   "currentCategory": "Entertainment"
 }
 ```
+### Error Handling
+Errors are returned as JSON objects in the following format:
+```
+{
+    "success": False, 
+    "error": 405,
+    "message": "method not allowed"
+}
+```
+The API will return three error types when requests fail:
+- 405: Method Not Allowed
+- 404: Resource Not Found
+- 422: Not Processable
 
 ## Testing
 
 Write at least one test for the success and at least one error behavior of each endpoint using the unittest library.
+
+## Testing Example
+`Test: Get paginated questions`
+To test for successful retrieval of paginated questions: 
+- the test captures a response using get method of the self.client method,
+- the json data from the response is then captured
+- a self.assertEqual test to ascertain the status code of the response is 200
+```
+        self.assertEqual(res.status_code, 200)
+```   
+`Test: Get categories`
+To test for successful retrieval of categories: 
+- the test captures a response using get method of the self.client method,
+- the json data from the response is then captured
+- a self.assertEqual test to ascertain the status code of the response is 200 
+```    
+        self.assertEqual(res.status_code, 200)
+```
+`TEST: Delete question`
+To test for successful deletion of question: 
+- the test captures a response using delete method of the self.client method,
+- the json data from the response is then captured
+- a self.assertEqual test to ascertain the status code of the response is 200 
+```    
+        self.assertEqual(res.status_code, 200)
+```
+`TEST: Add new question`
+To test for successful addition of question: 
+- the test captures a response using post method of the self.client method,
+- the json data from the response is then captured
+- a self.assertEqual test to ascertain the status code of the response is 200 
+```    
+        self.assertEqual(res.status_code, 200)
+```
+`TEST: Search question`
+To test for successful search of question: 
+- the test captures a response using post method of the self.client method,
+- the json data from the response is then captured
+- a self.assertEqual test to ascertain the status code of the response is 200 
+```    
+        self.assertEqual(res.status_code, 200)
+```
 
 To deploy the tests, run
 
