@@ -147,46 +147,74 @@ def create_app(test_config=None):
     @app.route("/questions", methods=["POST"])
     def add_question():
         # Retrieve new question attributes from the frontend
-        new_question = str(request.json["question"])
-        new_answer = str(request.json["answer"])
-        new_difficulty = str(request.json["difficulty"])
-        new_category = str(request.json["category"])
+        body = request.get_json()
+        new_question = body.get("question", None)
+        new_answer = body.get("answer", None)
+        new_difficulty = body.get("difficulty", None)
+        new_category = body.get("category", None)
+        search_term = body.get("searchTerm", None)
         
-        try:
-            # Create a new Question instance with the attributes received
-            question = Question(
-                question = new_question,
-                answer = new_answer,
-                difficulty = new_difficulty,
-                category = new_category
-            )
-            # Insert into the db
-            question.insert()
-            selection = (
-                Question.query
-                .order_by(Question.id)
-                .all()
-            )
-            # Paginate the result
-            current_question = paginate_questions(request, selection)
-            categories = Category.query.all()
-            current_category = (
-                Category.query
-                .filter(Category.id == selection[0].category)
-                .one_or_none()
-            )
+        if search_term:
+            try:
+                questions = (
+                    Question.query
+                    .filter(Question.question.ilike('%'+ search_term +'%'))
+                    .order_by(Question.id)
+                    .all()
+                )
+                #If no result, abort
+                questions_found = len(questions)
+            
+                current_category = (
+                    Category.query
+                    .filter(Category.id == questions[0].category)
+                    .one_or_none()
+                )
+
+                return jsonify({
+                    "success": True,
+                    "questions": [question.format() for question in questions],
+                    "total_questions": len(questions),
+                    "current_category": current_category.type
+                })
+            except:
+                abort(404)
+        else:
+            try:
+                # Create a new Question instance with the attributes received
+                question = Question(
+                    question = new_question,
+                    answer = new_answer,
+                    difficulty = new_difficulty,
+                    category = new_category
+                )
+                # Insert into the db
+                question.insert()
+                selection = (
+                    Question.query
+                    .order_by(Question.id)
+                    .all()
+                )
+                # Paginate the result
+                current_question = paginate_questions(request, selection)
+                categories = Category.query.all()
+                current_category = (
+                    Category.query
+                    .filter(Category.id == selection[0].category)
+                    .one_or_none()
+                )
+            
+                return jsonify({
+                    "success": True,
+                    "created": question.id,
+                    "questions": current_question,
+                    "total_questions": len(Question.query.all()),
+                    "categories": {category.id:category.type for category in categories},
+                    "current_category": current_category.type
+                })
         
-            return jsonify({
-                "success": True,
-                "created": question.id,
-                "questions": current_question,
-                "total_questions": len(Question.query.all()),
-                "categories": {category.id:category.type for category in categories},
-                "current_category": current_category.type
-            })
-        
-        except:
-            abort(422)
+            except:
+                abort(422)
 
     """
     @TODO:
@@ -198,38 +226,6 @@ def create_app(test_config=None):
     only question that include that string within their question.
     Try using the word "title" to start.
     """
-    @app.route("/questions/search", methods=["POST"])
-    def search_questions():
-        #Get the searchTerm
-        search_term = request.json["searchTerm"]
-        
-        try:
-            #Query the db with searchTerm
-            questions = (
-                Question.query
-                .filter(Question.question.ilike('%'+ search_term +'%'))
-                .order_by(Question.id)
-                .all()
-            )
-            #If no result, abort
-            if len(questions)== 0:
-                abort(404)
-            
-            current_category = (
-                Category.query
-                .filter(Category.id == questions[0].category)
-                .one_or_none()
-            )
-
-            return jsonify({
-                "success": True,
-                "questions": [question.format() for question in questions],
-                "total_questions": len(questions),
-                "current_category": current_category.type
-            })
-        
-        except:
-            abort(404)
     """
     @TODO:
     Create a GET endpoint to get questions based on category.
