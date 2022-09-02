@@ -98,7 +98,9 @@ API endpoints can be invoked using cURL
 
 `GET '/categories/${id}/questions'` <br/>
 ***Example***: <br/>
+````
  curl http://127.0.0.1:5000/categories/4/questions
+ ````
 
 
 - Fetches questions for a cateogry specified by id request argument
@@ -133,8 +135,10 @@ API endpoints can be invoked using cURL
 ---
 
 `DELETE '/questions/${id}'`
-***Example***:
+***Example***: <br/>
+```
 curl http://127.0.0.1:5000/questions/17 -X DELETE
+```
 
 
 - Deletes a specified question using the id of the question
@@ -163,8 +167,9 @@ curl http://127.0.0.1:5000/questions/17 -X DELETE
  }
 ```
 
-- Returns: a single new question object
+- Returns: a single new question object   <br/>
 
+***Sample Output** <br/>
 ```json
 {
   "question": {
@@ -187,9 +192,8 @@ curl http://127.0.0.1:5000/questions/17 -X DELETE
 
  ````
 
-
 - Sends a post request in order to add a new question
-- In the request body you specify the question, the answer, the difficulty a number between 1-4(inclusive) where one is least difficult and 4 being very difficult
+- In the request body you specify the question, the answer, the difficulty a number between 1-4(inclusive) where one is least difficult and 4 being very difficult.
 - Request Body:
 
 ```json
@@ -215,7 +219,11 @@ curl http://127.0.0.1:5000/questions/17 -X DELETE
 
 ---
 
-`POST '/questions/search'`
+`POST '/questions/search'`  <br/>
+***Example***:
+```
+curl http://127.0.0.1:5000/questions/search -X POST -H "Content-Type: application/json" -d '{"SearchTerm":"This is a search term for the question you are looking for"}'
+```
 
 - Sends a post request in order to search for a specific question by search term
 - Request Body:
@@ -226,8 +234,8 @@ curl http://127.0.0.1:5000/questions/17 -X DELETE
 }
 ```
 
-- Returns: any array of questions, a number of totalQuestions that met the search term and the current category string
-
+- Returns: any array of questions, a number of total_questions that met the search term and the current category string<br/>
+***Sample Output*** <br/>
 ```json
   {"current_category": "Art",
   "questions": [
