@@ -62,8 +62,16 @@ class TriviaTestCase(unittest.TestCase):
         res = self.client().delete('/questions/2')
 
         question = Question.query.filter( Question.id == 2).one_or_none()
-        self.assertEqual(res.status_code, 200)
         self.assertEqual(question, None)
+
+    def test_create_question(self):
+        res = self.client().post('/questions', json={'question':'Heres a new question string', 'answer': 'Here a new answer string','difficulty':1,'category':3})
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data['success'], True)
+
+
 
 # Make the tests conveniently executable
 if __name__ == "__main__":

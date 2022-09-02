@@ -121,7 +121,27 @@ def create_app(test_config=None):
     the form will clear and the question will appear at the end of the last page
     of the questions list in the "List" tab.
     """
+    @app.route('/questions', methods=['POST'])
+    def create_question():
+        body = request.get_json()
+        new_question = body.get('question',None)
+        new_answer = body.get('answer',None)
+        new_difficult = body.get('difficulty',None)
+        new_category = body.get('category', None)
 
+        add_question = Question(
+            question = new_question, 
+            answer = new_answer,
+            difficulty= new_difficult,
+            category= new_category
+        )
+
+        add_question.insert()
+
+        return jsonify({
+            'success':True
+        })
+        
     """
     @TODO:
     Create a POST endpoint to get questions based on a search term.
