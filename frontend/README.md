@@ -21,16 +21,17 @@ Errors are returned as JSON objects in the following format:
 
 ### Usage
 API endpoints can be invoked using cURL
-Example of using cURL for GET request:
-curl http://127.0.0.1:5000/categories
+***Example of using cURL for GET request***: <br/>
+```curl http://127.0.0.1:5000/categories
+```
 
 ### Endpoints
 `GET '/categories'`
 
 - Fetches a dictionary of categories in which the keys are the ids and the value is the corresponding string of the category
 - Request Arguments: None
-- Returns: An object with a single key, categories, that contains an object of id: category_string key:value pairs.
-***Sample Output***
+- Returns: An object with a single key, categories, that contains an object of id: category_string key:value pairs. <br/>
+***Sample Output*** <br/>
 ```json
 {
   "categories": {
@@ -47,16 +48,17 @@ curl http://127.0.0.1:5000/categories
 
 ---
 
-`GET '/questions?page=${integer}'`
-***Example***:
-curl http://127.0.0.1:5000/questions?page=1
+`GET '/questions?page=${integer}'`  <br/>
+***Example***: <br/>
+```curl http://127.0.0.1:5000/questions?page=1
+```
 
 
 - Fetches a paginated set of questions, a total number of questions, all categories and current category string.
 - Request Arguments: `page` - integer
-- Returns: An object with 10 paginated questions, total questions, object including all categories, and current category string
+- Returns: An object with 10 paginated questions, total questions, object including all categories, and current category string  <br/>
 
-***Sample Output***
+***Sample Output*** <br/>
 ```json
   {"categories": {
     "1": "Science",
@@ -94,8 +96,8 @@ curl http://127.0.0.1:5000/questions?page=1
 
 ---
 
-`GET '/categories/${id}/questions'`
-***Example***:
+`GET '/categories/${id}/questions'` <br/>
+***Example***: <br/>
  curl http://127.0.0.1:5000/categories/4/questions
 
 
@@ -178,9 +180,12 @@ curl http://127.0.0.1:5000/questions/17 -X DELETE
 
 ---
 
-`POST '/questions'`
-***Example***:
+`POST '/questions'`  <br/>
+***Example***:  <br/>
+ ```
  curl http://127.0.0.1:5000/questions -X POST -H "Content-Type: application/json" -d '{"question":"This is a question","answer":"This is an answer","category":"1","difficulty":"4"}'
+
+ ````
 
 
 - Sends a post request in order to add a new question
@@ -196,7 +201,7 @@ curl http://127.0.0.1:5000/questions/17 -X DELETE
 }
 ```
 
-- Returns: an object with the id of the question that has just been created and the total number of questions in the question bank
+- Returns: an object with the id of the question that has just been created and the total number of questions in the question bank <br/>
 ***Sample Output***
 ```json
 {
