@@ -1,0 +1,111 @@
+@TODO Tasks
+Look for specific tasks in the /backend/flaskr/-__init__.py file.
+
+For each endpoint, you are expected to define the endpoint and response data. You can use the frontend as a resource -- it is set up to expect certain endpoints and response data -- or you can specify different endpoints and update update the frontend.
+
+Use Flask-CORS to enable cross-domain requests and set response headers.
+Create an endpoint to handle GET requests for questions, including pagination (every 10 questions). This endpoint should return a list of questions, number of total questions, current category, categories.
+Create an endpoint to handle GET requests for all available categories.
+Create an endpoint to DELETE a question using a question ID.
+Create an endpoint to POST a new question, which will require the question and answer text, category, and difficulty score.
+Create a POST endpoint to get questions based on category.
+Create a POST endpoint to get questions based on a search term. It should return any questions for whom the search term is a substring of the question.
+Create a POST endpoint to get questions to play the quiz. This endpoint should take a category and previous question parameters and return a random questions within the given category, if provided, and that is not one of the previous questions.
+Create error handlers for all expected errors including 400, 404, 422, and 500.
+
+GET '/api/v1.0/categories'
+
+{
+  "1": "Science",
+  "2": "Art",
+  "3": "Geography",
+  "4": "History",
+  "5": "Entertainment",
+  "6": "Sports"
+}
+
+GET '/questions?page=${integer}'
+
+{
+    'questions': [
+        {
+            'id': 1,
+            'question': 'This is a question',
+            'answer': 'This is an answer',
+            'difficulty': 5,
+            'category': 2
+        },
+    ],
+    'totalQuestions': 100,
+    'categories': { '1' : "Science",
+    '2' : "Art",
+    '3' : "Geography",
+    '4' : "History",
+    '5' : "Entertainment",
+    '6' : "Sports" },
+    'currentCategory': 'History'
+}
+
+
+
+GET '/categories/${id}/questions'
+
+{
+    'questions': [
+        {
+            'id': 1,
+            'question': 'This is a question',
+            'answer': 'This is an answer',
+            'difficulty': 5,
+            'category': 4
+        },
+    ],
+    'totalQuestions': 100,
+    'currentCategory': 'History'
+}
+
+DELETE '/questions/${id}'
+
+POST '/quizzes'
+Request Body {
+    'previous_questions': [1, 4, 20, 15]
+    quiz_category': 'current category'
+ }
+
+ Response {
+    'question': {
+        'id': 1,
+        'question': 'This is a question',
+        'answer': 'This is an answer',
+        'difficulty': 5,
+        'category': 4
+    }
+}
+
+POST '/questions'
+{
+    'question':  'Heres a new question string',
+    'answer':  'Heres a new answer string',
+    'difficulty': 1,
+    'category': 3,
+}
+
+
+POST '/questions'
+{
+    'searchTerm': 'this is the term the user is looking for'
+}
+
+Response {
+    'questions': [
+        {
+            'id': 1,
+            'question': 'This is a question',
+            'answer': 'This is an answer',
+            'difficulty': 5,
+            'category': 5
+        },
+    ],
+    'totalQuestions': 100,
+    'currentCategory': 'Entertainment'
+}
