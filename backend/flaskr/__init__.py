@@ -113,8 +113,6 @@ def create_app(test_config=None):
             res["current_category"] =  category.type        
 
         return jsonify(res)
-    
-
 
     """
     @TODO:
@@ -133,12 +131,11 @@ def create_app(test_config=None):
             
             question.delete()
             selection = Question.query.order_by(Question.id).all()
-            current_questions = paginate_questions(request, selection)
+            
             
             return jsonify({
                 "success": True,
                 "deleted": question_id,
-                "questions": current_questions,
                 "total_questions": len(Question.query.all())
             })
         except:
@@ -169,22 +166,18 @@ def create_app(test_config=None):
             question.insert()
             selection = Question.query.order_by(Question.id).all()
             current_questions = paginate_questions(request, selection)
-
             
 
             return jsonify(
                     {
                         "success": True,
                         "created": question.id,
-                        "books": current_questions,
-                        "total_question": len(Question.query.all())
+                        "total_questions": len(Question.query.all())
                     }
                 )
         except:
             abort(422)
-
       
-       
    
     """
     @TODO:
@@ -218,7 +211,6 @@ def create_app(test_config=None):
         except:
             abort(422)
 
-
     """
     @TODO:
     Create a GET endpoint to get questions based on category.
@@ -247,9 +239,7 @@ def create_app(test_config=None):
             return jsonify(res)
         except:
             abort(422)
-
-
-            
+        
 
     """
     @TODO:
@@ -285,10 +275,6 @@ def create_app(test_config=None):
             })
         except:
             abort(422)
-
-     
-         
-
 
 
 
