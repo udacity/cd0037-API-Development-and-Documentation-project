@@ -20,9 +20,10 @@ Errors are returned as JSON objects in the following format:
 ```
 
 ### Usage
-API endpoints can be invoked using cURL
+API endpoints can be invoked using cURL <br/>
 ***Example of using cURL for GET request***: <br/>
-```curl http://127.0.0.1:5000/categories
+```
+curl http://127.0.0.1:5000/categories
 ```
 
 ### Endpoints
