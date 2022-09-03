@@ -1,7 +1,7 @@
 import os
 from re import T
 from unicodedata import category
-from flask import Flask, request, abort, jsonify,flash
+from flask import Flask, request, abort, jsonify,flash,redirect,url_for
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 import random
@@ -252,15 +252,16 @@ def create_app(test_config=None):
     one question at a time is displayed, the user is allowed to answer
     and shown whether they were correct or not.
     """
-    @app.route("/quizzes", methods=["POST"])
+    @app.route("/quizzes", methods=["POST",])
     def play_quizz():
         body = request.get_json()
         category = body.get("quiz_category")
-        
-        prev_question = body.get("previous_questions")
-        print(body,"\n",category)
 
         try:
+        
+            prev_question = body.get("previous_questions")
+            print(prev_question)
+                    
             if category['type'] == 'click':
                 
                 questions = Question.query.filter(Question.id.notin_(prev_question)).all()
@@ -269,12 +270,18 @@ def create_app(test_config=None):
                 Question.id.notin_(prev_question)).all()
                 
             next_question = random.choice(questions).format()
+            
             return jsonify({
                 "success":True,
                 "question": next_question
             })
+        except IndexError:
+            return jsonify(
+                {'success':True}
+            )
         except:
             abort(422)
+
 
 
 

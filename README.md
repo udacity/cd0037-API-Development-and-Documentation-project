@@ -99,7 +99,7 @@ Create tables
 Once your database is created, you can create tables (questions,categories) and apply contraints <br/>
 ##### Mac users
 ```
-psql -f trivia.psql -U student -d trivia
+psql -f trivia.psql -U postgres -d trivia
 ```
 ##### Linux users
 ```
