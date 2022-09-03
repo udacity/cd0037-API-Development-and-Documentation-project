@@ -18,7 +18,11 @@ Errors are returned as JSON objects in the following format:
       "message": "bad request"
   }
 ```
-
+The API will return these types when requests fails: <br/>
+400: Bad Request  
+404: Resource Not Found  
+422: Not Processable  
+405: Method Not Allowed  <br/>
 ### Usage
 API endpoints can be invoked using cURL <br/>
 ***Example of using cURL for GET request***: <br/>

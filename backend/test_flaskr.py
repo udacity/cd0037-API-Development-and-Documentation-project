@@ -55,12 +55,12 @@ class TriviaTestCase(unittest.TestCase):
     
     def test_success_delete_question(self):
         """Test that we are able to delete a question"""
-        res = self.client().delete("/questions/5")
+        res = self.client().delete("/questions/2")
         data = json.loads(res.data)
-        question = Question.query.get(5)
+        question = Question.query.get(2)
         self.assertEqual(res.status_code, 200)
         self.assertEqual(data["success"], True)
-        self.assertEqual(data["deleted"], 5)
+        self.assertEqual(data["deleted"], 2)
         self.assertEqual(question,None)
              
 

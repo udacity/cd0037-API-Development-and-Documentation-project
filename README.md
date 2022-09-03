@@ -1,49 +1,397 @@
-# API Development and Documentation Final Project
 
-## Trivia App
+# Trivia App Project Documentation
 
-Udacity is invested in creating bonding experiences for its employees and students. A bunch of team members got the idea to hold trivia on a regular basis and created a webpage to manage the trivia app and play the game, but their API experience is limited and still needs to be built out.
+### Project description
+This is a Trivia App is a trivia game that was made to create a bonding experience between people be it in the workplace, family setting or amongst friends. In the game, players can choose to play by category where they can choose a particular category for their questions, or they can play a randomised set of questions where there will be questions from each category.  <br/>
+#### Code Style
+All backend code follows PEP8 style guidelines. <br/>
 
-That's where you come in! Help them finish the trivia app so they can start holding trivia and seeing who's the most knowledgeable of the bunch. The application must:
+### Getting Started
+To get started you will need to have this code on your local computer. Here are some steps to get you started.  
 
-1. Display questions - both all questions and by category. Questions should show the question, category and difficulty rating by default and can show/hide the answer.
-2. Delete questions.
-3. Add questions and require that they include question and answer text.
-4. Search for questions based on a text query string.
-5. Play the quiz game, randomizing either all questions or within a specific category.
+#### Prerequisites & Installation
+To have the code on your computer, start by forking this repository and then cloning it onto your computer. <br/>
+Once you have it downloaded, open it on a IDE of your choice e.g. Visual Studio Code.
 
-Completing this trivia app will give you the ability to structure plan, implement, and test an API - skills essential for enabling your future applications to communicate with others.
 
-## Starting and Submitting the Project
+Pre-requisites and Local Development
+Developers using this project should already have Python3, pip and node installed on their local machines.
 
-[Fork](https://help.github.com/en/articles/fork-a-repo) the project repository and [clone](https://help.github.com/en/articles/cloning-a-repository) your forked repository to your machine. Work on the project locally and make sure to push all your changes to the remote repository before submitting the link to your repository in the Classroom.
 
-## About the Stack
+***Backend***  <br/>
+From the terminal, make sure you are in the project direct and cd into the backend folder. <br/>
 
-We started the full stack application for you. It is designed with some key functional areas:
+From the backend folder run we can start to install the dependecies that are needed to run the server.Tools you will need:  <br/>
 
-### Backend
 
-The [backend](./backend/README.md) directory contains a partially completed Flask and SQLAlchemy server. You will work primarily in `__init__.py` to define your endpoints and can reference models.py for DB and SQLAlchemy setup. These are the files you'd want to edit in the backend:
+- virtualenv as a tool to create isolated Python environments
+- SQLAlchemy ORM to be our ORM library of choice
+- PostgreSQL as our database of choice <br/>
 
-1. `backend/flaskr/__init__.py`
-2. `backend/test_flaskr.py`
+Start your virtual environment From the backend folder run
 
-> View the [Backend README](./backend/README.md) for more details.
+##### Mac users
+```
+python3 -m venv venv
+source venv/bin/activate
+```
+##### Windows users
+```
+ py -3 -m venv venv
+ venv\Scripts\activate 
+```
 
-### Frontend
+Next, you will  download and install the dependencies the other required packages which are included in the requirements file.:  <br/>
+```
+pip install requirements.txt. 
+```
 
-The [frontend](./frontend/README.md) directory contains a complete React frontend to consume the data from the Flask server. If you have prior experience building a frontend application, you should feel free to edit the endpoints as you see fit for the backend you design. If you do not have prior experience building a frontend application, you should read through the frontend code before starting and make notes regarding:
+To run the application run the following commands:
+```
+export FLASK_APP=flaskr
+export FLASK_DEBUG=true
+flask run
+```
+***Start/Stop the PostgreSQL server*** <br/>
+Mac users can follow the commands below: <br/>
+```
+which postgres
+postgres --version
+```
+##### Start/stop
+pg_ctl -D /usr/local/var/postgres start <br/>
+pg_ctl -D /usr/local/var/postgres stop <br/>
+Windows users can follow the commands below:<br/>
 
-1. What are the end points and HTTP methods the frontend is expecting to consume?
-2. How are the requests from the frontend formatted? Are they expecting certain parameters or payloads?
+Find the database directory, it should be something like that: C:\Program Files\PostgreSQL\13.2\data <br/>
+Then, in the command line, execute the folllowing command: <br/>
+##### Start the server
+```
+pg_ctl -D "C:\Program Files\PostgreSQL\13.2\data" start 
 
-Pay special attention to what data the frontend is expecting from each API response to help guide how you format your API. The places where you may change the frontend behavior, and where you should be looking for the above information, are marked with `TODO`. These are the files you'd want to edit in the frontend:
+```
+##### Stop the server
+```
+pg_ctl -D "C:\Program Files\PostgreSQL\13.2\data" stop 
+```
+If it shows that the port already occupied error, run: <br/>
+````
+sudo su - 
+ps -ef | grep postmaster | awk '{print $2}'
+kill <PID> 
 
-1. `frontend/src/components/QuestionView.js`
-2. `frontend/src/components/FormView.js`
-3. `frontend/src/components/QuizView.js`
+````
+***Create and Populate the database*** <br/>
 
-By making notes ahead of time, you will practice the core skill of being able to read and understand code and will have a simple plan to follow to build out the endpoints of your backend API.
 
-> View the [Frontend README](./frontend/README.md) for more details.
+Create the database and a user
+In your terminal, navigate to the project directory and run the following:
+
+##### Connect to the PostgreSQL
+psql postgres
+#View all databases
+\l
+##### Create the database, create a user - `postgres`, grant all privileges to the postgres
+\i setup.sql
+##### Exit the PostgreSQL prompt
+\q
+Create tables
+Once your database is created, you can create tables (questions,categories) and apply contraints <br/>
+##### Mac users
+```
+psql -f trivia.psql -U student -d trivia
+```
+##### Linux users
+```
+su - postgres bash -c "psql bookshelf < /path/to/project/backend/trivia.psql"
+```
+You can even drop the database and repopulate it, if needed, using the commands above.
+
+
+
+***Frontend*** <br/>
+Now, change directories and cd into the frontend folder and run: <br/>
+```
+npm install  #run this only once!
+
+```
+and then this to start the server: <br/>
+```
+npm start
+
+```
+You should now see a browser window with app's UI. By default, the frontend will run on localhost:3000. <br/>
+
+### API Reference
+
+##### Getting Started
+Base URL: At present this app can only be run locally and is not hosted as a base URL. The backend app is hosted at the default, http://127.0.0.1:5000/, which is set as a proxy in the frontend configuration.
+
+##### Authentication
+This version of the application does not require authentication or API keys.
+
+##### Error Handling
+Errors are returned as JSON objects in the following format:
+
+```json
+  {
+      "success": False, 
+      "error": 400,
+      "message": "bad request"
+  }
+```
+The API will return these types when requests fails: <br/>
+400: Bad Request  
+404: Resource Not Found  
+422: Not Processable  
+405: Method Not Allowed  <br/>
+##### Usage
+API endpoints can be invoked using cURL <br/>
+***Example of using cURL for GET request***: <br/>
+```
+curl http://127.0.0.1:5000/categories
+```
+
+##### Endpoints
+`GET '/categories'`
+
+- Fetches a dictionary of categories in which the keys are the ids and the value is the corresponding string of the category
+- Request Arguments: None
+- Returns: An object with a single key, categories, that contains an object of id: category_string key:value pairs. <br/>
+***Sample Output*** <br/>
+```json
+{
+  "categories": {
+    "1": "Science",
+    "2": "Art",
+    "3": "Geography",
+    "4": "History",
+    "5": "Entertainment",
+    "6": "Sports"
+  },
+    "success": true
+}
+```
+
+---
+
+`GET '/questions?page=${integer}'`  <br/>
+***Example***: <br/>
+```curl http://127.0.0.1:5000/questions?page=1
+```
+
+
+- Fetches a paginated set of questions, a total number of questions, all categories and current category string.
+- Request Arguments: `page` - integer
+- Returns: An object with 10 paginated questions, total questions, object including all categories, and current category string  <br/>
+
+***Sample Output*** <br/>
+```json
+  {"categories": {
+    "1": "Science",
+    "2": "Art",
+    "3": "Geography",
+    "4": "History",
+    "5": "Entertainment",
+    "6": "Sports"
+  },
+  "current_category": "Art",
+  "questions": [
+    {
+      "answer": "This is an answer",
+      "category": 5,
+      "difficulty": 4,
+      "id": 2,
+      "question": "This is a question"
+    },
+        {
+      "answer": "This is an answer",
+      "category": 5,
+      "difficulty": 4,
+      "id": 4,
+      "question": "This is a question"
+    },
+
+  
+  ],
+  "success": true,
+  "total_questions": 30
+}
+
+
+```
+
+---
+
+`GET '/categories/${id}/questions'` <br/>
+***Example***: <br/>
+````
+ curl http://127.0.0.1:5000/categories/4/questions
+ ````
+
+
+- Fetches questions for a cateogry specified by id request argument
+- Request Arguments: `id` - integer
+- Returns: An object with questions for the specified category, total questions, and current category string
+
+***Sample Output***
+```json
+{
+  "current_category": "History",
+  "questions": [
+    {
+      "answer": "This is an answer",
+      "category": 4,
+      "difficulty": 1,
+      "id": 9,
+      "question": "This is a question"
+    },
+    {
+      "answer": "This is an answer",
+      "category": 4,
+      "difficulty": 2,
+      "id": 12,
+      "question": "This is a question"
+    }
+  ],
+  "total_questions": 2
+}
+
+```
+
+---
+
+`DELETE '/questions/${id}'`
+***Example***: <br/>
+```
+curl http://127.0.0.1:5000/questions/17 -X DELETE
+```
+
+
+- Deletes a specified question using the id of the question
+- Request Arguments: `id` - integer
+- Returns:  id of the question that has been deleted anf total number of questions that are remaining in the question bank.
+```json
+{
+  "deleted": 14,
+  "success": true,
+  "total_questions": 28
+}
+
+```
+
+---
+
+`POST '/quizzes'`
+
+- Sends a post request in order to get the next question
+- Request Body:
+
+```json
+{
+    'previous_questions': [1, 4, 20, 15]
+    quiz_category': 'current category'
+ }
+```
+
+- Returns: a single new question object   <br/>
+
+***Sample Output** <br/>
+```json
+{
+  "question": {
+    "id": 1,
+    "question": "This is a question",
+    "answer": "This is an answer",
+    "difficulty": 5,
+    "category": 4
+  },
+  "success": true
+}
+```
+
+---
+
+`POST '/questions'`  <br/>
+***Example***:  <br/>
+ ```
+ curl http://127.0.0.1:5000/questions -X POST -H "Content-Type: application/json" -d '{"question":"This is a question","answer":"This is an answer","category":"1","difficulty":"4"}'
+
+ ````
+
+- Sends a post request in order to add a new question
+- In the request body you specify the question, the answer, the difficulty a number between 1-4(inclusive) where one is least difficult and 4 being very difficult.
+- Request Body:
+
+```json
+{
+  "question": "Heres a new question string",
+  "answer": "Heres a new answer string",
+  "difficulty": 1,
+  "category": 3
+}
+```
+
+- Returns: an object with the id of the question that has just been created and the total number of questions in the question bank <br/>
+***Sample Output***
+```json
+{
+  "created": 60,
+  "success": true,
+  "total_questions": 30
+}
+
+
+```
+
+---
+
+`POST '/questions/search'`  <br/>
+***Example***:
+```
+curl http://127.0.0.1:5000/questions/search -X POST -H "Content-Type: application/json" -d '{"SearchTerm":"This is a search term for the question you are looking for"}'
+```
+
+- Sends a post request in order to search for a specific question by search term
+- Request Body:
+
+```json
+{
+  "searchTerm": "this is the term the user is looking for"
+}
+```
+
+- Returns: any array of questions, a number of total_questions that met the search term and the current category string<br/>
+***Sample Output*** <br/>
+```json
+  {"current_category": "Art",
+  "questions": [
+    {
+      "answer": "This is an answer",
+      "category": 5,
+      "difficulty": 3,
+      "id": 6,
+      "question": "This is a question"
+    }
+  ],
+  "success": true,
+  "total_questions": 1
+}
+
+```
+
+
+### Deployment 
+N/A <br/>
+
+### Authors
+Dumisile Mbuthuma and Udacity Team
+
+### Acknowledgements
+I'd like the Udacity team and all my fellow students who helped me through this project.
+
+
+
+
+
+
