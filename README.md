@@ -103,7 +103,7 @@ psql -f trivia.psql -U student -d trivia
 ```
 ##### Linux users
 ```
-su - postgres bash -c "psql bookshelf < /path/to/project/backend/trivia.psql"
+su - postgres bash -c "psql trivia < /path/to/project/backend/trivia.psql"
 ```
 You can even drop the database and repopulate it, if needed, using the commands above.
 
