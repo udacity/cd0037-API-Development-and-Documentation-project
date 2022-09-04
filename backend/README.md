@@ -90,6 +90,24 @@ You will need to provide detailed documentation of your API endpoints including 
 }
 ```
 
+`POST '/quizzes'`
+
+`curl http://127.0.0.1:5000/quizzes -X POST -H "Content-Type: application/json" -d '{"previous_questions": [5, 9], "quiz_category": {"type": "History", "id": "4"} }'`
+
+```json
+{
+  "question": {
+    "answer": "George Washington Carver", 
+    "category": 4, 
+    "difficulty": 2, 
+    "id": 12, 
+    "question": "Who invented Peanut Butter?"
+  }
+}
+
+```
+
+
 ## Testing
 
 Write at least one test for the success and at least one error behavior of each endpoint using the unittest library.
