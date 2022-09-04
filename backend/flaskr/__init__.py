@@ -25,7 +25,7 @@ def create_app(test_config=None):
     app = Flask(__name__)
     setup_db(app)
     """
-    @TODO: Set up CORS. Allow '*' for origins. Delete the sample route after completing the TODOs
+    @TODO: Set up CORS. Allow '*' for origins. Delete the sample route after completing the TODOs [for example: I should allow this http://example.com:5000/api/v1/questions to be accepted as http://example.com:5000/questions]
     """
     CORS(app, resources={r"/api/*": {"origins": "*"}})
 
@@ -83,6 +83,11 @@ def create_app(test_config=None):
         # get all questions order by ID
         selection = Question.query.order_by(Question.id).all()
 
+        formatted_questions = paginate_questions(request, selection)
+
+        if len(formatted_questions) == 0:
+            abort(404)
+
         # get all categories order by ID
         categories = Category.query.order_by(Category.id).all()
 
@@ -94,7 +99,7 @@ def create_app(test_config=None):
             categories_dict[category.id] = category.type
 
         return jsonify({
-            'questions': paginate_questions(request, selection),
+            'questions': formatted_questions,
             'total_questions': len(Question.query.all()),
             'categories': categories_dict,
             'current_category': None
@@ -114,10 +119,6 @@ def create_app(test_config=None):
             # get the question with specific question ID
             question = Question.query.filter(Question.id == question_id).one_or_none()
 
-            # if it isn't found
-            if question is None:
-                abort(404)
-            
             # delete the question
             question.delete()
 
@@ -167,7 +168,11 @@ def create_app(test_config=None):
 
             # Case-insensitive and partial search for questions by title
             questions = Question.query.order_by(Question.id).filter(
-                Question.question.ilike("%{}%".format(searchTerm)))
+                Question.question.ilike("%{}%".format(searchTerm))).all()
+
+            # in case there's no result from the search
+            if len(questions) == 0:
+                    abort(404)
 
             # paginate the questions in groups of 10
             formatted_questions = paginate_questions(request, questions)
@@ -179,6 +184,8 @@ def create_app(test_config=None):
             })
 
         else:
+
+            try:
                 # create a new question object 
                 question = Question(question=new_question, answer=new_answer, category=new_category, difficulty=new_difficulty)
 
@@ -189,6 +196,9 @@ def create_app(test_config=None):
                     'success': True,
                     'created': question.format(),
                 })
+                
+            except:
+                abort(400)
 
     """
     @TODO:
