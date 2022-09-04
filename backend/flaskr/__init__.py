@@ -221,6 +221,9 @@ def create_app(test_config=None):
         # get the category object with an ID equal to 'id from the parameters of the func.
         current_category = Category.query.filter(Category.id == id).one_or_none()
 
+        if current_category is None:
+            abort(404)
+
         # format the result to be accepted in jsonify return below
         current_category = current_category.format()
 
