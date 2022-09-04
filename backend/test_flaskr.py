@@ -41,13 +41,16 @@ class TriviaTestCase(unittest.TestCase):
     def tearDown(self):
         """Executed after reach test"""
         pass
+
+    """
+    TODO
+    Write at least one test for each test for successful operation and for expected errors. [done]
+    """
+
 # =============================================================================================
 # READ Section
 # =============================================================================================
-    """
-    TODO
-    Write at least one test for each test for successful operation and for expected errors.
-    """
+
     def test_get_paginated_questions(self):
         res = self.client().get("/questions")
         data = json.loads(res.data)
@@ -60,6 +63,24 @@ class TriviaTestCase(unittest.TestCase):
 
     def test_404_requesting_beyond_valid_page(self):
         res = self.client().get("/questions?page=1000")
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 404)
+        self.assertEqual(data["error"], 404)
+        self.assertEqual(data["message"], "resource not found")
+        self.assertFalse(data["success"])
+
+    def test_get_questions_by_category(self):
+        res = self.client().get("/categories/4/questions")
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data["current_category"], "History")
+        self.assertTrue(len(data["questions"]))
+        self.assertTrue(data["total_questions"])
+
+    def test_404_get_questions_by_category(self):
+        res = self.client().get("/categories/1000/questions")
         data = json.loads(res.data)
 
         self.assertEqual(res.status_code, 404)
