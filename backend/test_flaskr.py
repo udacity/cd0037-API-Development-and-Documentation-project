@@ -22,13 +22,13 @@ class TriviaTestCase(unittest.TestCase):
 
         self.new_question2 = {"question": "Hello World!", "answer": "programming", "difficulty": "1", "category": "1"}
 
-        self.searchTermExistQuestion = {"searchTerm": "Say my"}
+        self.searchTermExistQuestion = {"searchTerm": "How"}
 
         self.searchTermNotExistQuestion = {"searchTerm": "Lona"}
 
         self.play_quiz1 = {"previous_questions": [5, 9], "quiz_category": {"type": "History", "id": "4"} }
 
-        self.play_quiz2 = {"previous_questions": [5, 9, 12, 23], "quiz_category": {"type": "History", "id": "4"} }
+        self.play_quiz2 = {"previous_questions": [5, 9, 12, 23, 29], "quiz_category": {"type": "History", "id": "4"} }
 
 
         # binds the app to the current context
@@ -43,7 +43,7 @@ class TriviaTestCase(unittest.TestCase):
         pass
 
     """
-    TODO
+    DONE
     Write at least one test for each test for successful operation and for expected errors. [done]
     """
 
@@ -145,7 +145,7 @@ class TriviaTestCase(unittest.TestCase):
         data = json.loads(res.data)
 
         self.assertEqual(res.status_code, 200)
-        self.assertEqual(len(data["questions"]), 3) # 3 is the number of question with the value "Say my" (partial search)
+        self.assertEqual(len(data["questions"]), 2) # 2 is the number of questions (partial search)
         self.assertTrue(data["total_questions"])
         self.assertEqual(data["current_category"], None)
 
@@ -159,7 +159,7 @@ class TriviaTestCase(unittest.TestCase):
         self.assertFalse(data["success"])
 
 # =============================================================================================
-# Quizz Section
+# Quiz Section
 # =============================================================================================
 
     def test_play_quiz(self):
