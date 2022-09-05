@@ -188,12 +188,88 @@ You will need to provide detailed documentation of your API endpoints including 
 
 ```
 
+`DELETE '/questions/{id}'`
+
+- Request Arguments: 'id' as the question id to be deleted.
+- Returns JSON object with the following body:
+
+   - `success`: returns a success value of this request, either true or false.
+   - `deleted`: returns id of the deleted question.
+
+`curl http://127.0.0.1:5000/questions/28 -X DELETE`
+```json
+{
+  "deleted": 28, 
+  "success": true
+}
+```
+
+
+`POST '/questions'`
+
+- Request Arguments: JSON object with the following body:
+
+   - `question`: returns question value as a string.
+   - `answer`: returns answer value as a string.
+   - `category`: returns category id as a string from 1 to the last category id.
+   - `difficulty`: returns difficulty value as a string from 1 to 5.
+   - `searchTerm`: returns search value which is case-insensitive and partial search.
+ 
+ There's two features can be run here in this request based on the request argument values.
+ if `searchTerm` element doesn't exist in the JSON object from the request argument, it will activiate `create new question` feature using the rest of the request body elements. it will return the following JSON Object body:
+ 
+ - `success`: returns the success value of this request, either true of false.
+ - `created`: returns a formatted JSON object to descripe the created question.
+  
+
+Otherwise, if `searchTerm` exist in the JSON body from the request argument, it will ignore the rest of the request body and take the value of `searchTerm`, it will search for questions (case-insensitive and partial search) based on the `searchTerm` value.
+
+ - `questions`: returns the resulting questions of this search request as a paginated questions in groups of 10.
+ - `total_questions`: returns the number of questions in all categories.
+ - `current_category`: returns 'None' value for now, because there's a chance the resulting questions can be from different categories.
+
+### Sample - creating new question
+`curl http://127.0.0.1:5000/questions -X POST -H "Content-Type: application/json" -d '{"question": "How are you?", "answer": "better than you", "category": "4", "difficulty": "5" }'`
+```json
+{
+  "created": {
+    "answer": "better than you", 
+    "category": 4, 
+    "difficulty": 5, 
+    "id": 29, 
+    "question": "How are you?"
+  }, 
+  "success": true
+}
+```
+
+### Sample - search for questions
+`curl http://127.0.0.1:5000/questions -X POST -H "Content-Type: application/json" -d '{"searchTerm": "how" }'`
+```json
+{
+  "current_category": null, 
+  "questions": [
+    {
+      "answer": "One", 
+      "category": 2, 
+      "difficulty": 4, 
+      "id": 18, 
+      "question": "How many paintings did Van Gogh sell in his lifetime?"
+    }
+  ], 
+  "total_questions": 22
+}
+```
+  
+
 `POST '/quizzes'`
 
 - Fetches JSON object with 'question' element which have a value of the next random question, and if there's no coming question, it should return 'None' or 'Null' as the value of 'question' element.
 - Request Arguments: JSON object with the following body:
+
   - `previous_questions`: A list of previous questions IDs.
   - `quiz_category`: A dictionary which have `type` with the value of `category_string` and `id` with the value of `category_id` as a string.
+
 - Returns: JSON object with a single element `question` which have either the value of `None` as there's no coming question or `question object` of the coming random question.
 
 `curl http://127.0.0.1:5000/quizzes -X POST -H "Content-Type: application/json" -d '{"previous_questions": [5, 9], "quiz_category": {"type": "History", "id": "4"} }'`
