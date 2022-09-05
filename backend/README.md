@@ -90,7 +90,111 @@ You will need to provide detailed documentation of your API endpoints including 
 }
 ```
 
+`GET '/questions'`
+
+- Request Arguments: [Optional] - 'page': determine the page number for questions.
+- Returns JSON object with the following body:
+   - `categories`: returns a dictionary of categories in which the keys are the ids and the value is the corresponding string of the category.
+   - `current_category`: returns 'None' bcause questions are from different categories not just one.
+   - `total_questions`: returns the number of questions in all categories.
+   - `questions`: returns paginated questions in groups of 10, each with full object description.
+
+`curl http://127.0.0.1:5000/questions` or `curl http://127.0.0.1:5000/questions?page=1`
+```json
+{
+  "categories": {
+    "1": "Science", 
+    "2": "Art", 
+    "3": "Geography", 
+    "4": "History", 
+    "5": "Entertainment", 
+    "6": "Sports"
+  }, 
+  "current_category": null, 
+  "questions": [
+    {
+      "answer": "Apollo 13", 
+      "category": 5, 
+      "difficulty": 4, 
+      "id": 2, 
+      "question": "What movie earned Tom Hanks his third straight Oscar nomination, in 1996?"
+    }, 
+    {
+      "answer": "Tom Cruise", 
+      "category": 5, 
+      "difficulty": 4, 
+      "id": 4, 
+      "question": "What actor did author Anne Rice first denounce, then praise in the role of her beloved Lestat?"
+    }, 
+    {
+      "answer": "Maya Angelou", 
+      "category": 4, 
+      "difficulty": 2, 
+      "id": 5, 
+      "question": "Whose autobiography is entitled 'I Know Why the Caged Bird Sings'?"
+    }, 
+    {
+      "answer": "Edward Scissorhands", 
+      "category": 5, 
+      "difficulty": 3, 
+      "id": 6, 
+      "question": "What was the title of the 1990 fantasy directed by Tim Burton about a young man with multi-bladed appendages?"
+    }, 
+    {
+      "answer": "Muhammad Ali", 
+      "category": 4, 
+      "difficulty": 1, 
+      "id": 9, 
+      "question": "What boxer's original name is Cassius Clay?"
+    }, 
+    {
+      "answer": "Uruguay", 
+      "category": 6, 
+      "difficulty": 4, 
+      "id": 11, 
+      "question": "Which country won the first ever soccer World Cup in 1930?"
+    }, 
+    {
+      "answer": "George Washington Carver", 
+      "category": 4, 
+      "difficulty": 2, 
+      "id": 12, 
+      "question": "Who invented Peanut Butter?"
+    }, 
+    {
+      "answer": "Lake Victoria", 
+      "category": 3, 
+      "difficulty": 2, 
+      "id": 13, 
+      "question": "What is the largest lake in Africa?"
+    }, 
+    {
+      "answer": "The Palace of Versailles", 
+      "category": 3, 
+      "difficulty": 3, 
+      "id": 14, 
+      "question": "In which royal palace would you find the Hall of Mirrors?"
+    }, 
+    {
+      "answer": "Agra", 
+      "category": 3, 
+      "difficulty": 2, 
+      "id": 15, 
+      "question": "The Taj Mahal is located in which Indian city?"
+    }
+  ], 
+  "total_questions": 23
+}
+
+```
+
 `POST '/quizzes'`
+
+- Fetches JSON object with 'question' element which have a value of the next random question, and if there's no coming question, it should return 'None' or 'Null' as the value of 'question' element.
+- Request Arguments: JSON object with the following body:
+  - `previous_questions`: A list of previous questions IDs.
+  - `quiz_category`: A dictionary which have `type` with the value of `category_string` and `id` with the value of `category_id` as a string.
+- Returns: JSON object with a single element `question` which have either the value of `None` as there's no coming question or `question object` of the coming random question.
 
 `curl http://127.0.0.1:5000/quizzes -X POST -H "Content-Type: application/json" -d '{"previous_questions": [5, 9], "quiz_category": {"type": "History", "id": "4"} }'`
 
