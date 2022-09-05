@@ -27,7 +27,7 @@ def create_app(test_config=None):
     """
     @TODO: Set up CORS. Allow '*' for origins. Delete the sample route after completing the TODOs [for example: I should allow this http://example.com:5000/api/v1/questions to be accepted as http://example.com:5000/questions]
     """
-    CORS(app, resources={r"/api/*": {"origins": "*"}})
+    cors = CORS(app, resources={r"/*": {"origins": "*"}})
 
 
     """
