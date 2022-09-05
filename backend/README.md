@@ -188,7 +188,7 @@ You will need to provide detailed documentation of your API endpoints including 
 
 ```
 
-`DELETE '/questions/{id}'`
+`DELETE '/questions/{question_id}'`
 
 - Request Arguments: 'id' as the question id to be deleted.
 - Returns JSON object with the following body:
@@ -258,6 +258,61 @@ Otherwise, if `searchTerm` exist in the JSON body from the request argument, it 
     }
   ], 
   "total_questions": 22
+}
+```
+`GET '/categories/{category_id}/questions'`
+
+- Fetches questions based on a single category.
+- Request Arguments: `category_id` as an integer that represent the category id.
+- Returns: JSON object with the following body:
+
+  - `questions`: returns the resulting questions by category as a paginated questions in groups of 10.
+  - `total_questions`: returns the number of questions in all categories.
+  - `current_category`: returns category type as a string.
+
+`curl http://127.0.0.1:5000/categories/4/questions`
+
+```json
+{
+  "current_category": "History", 
+  "questions": [
+    {
+      "answer": "Maya Angelou", 
+      "category": 4, 
+      "difficulty": 2, 
+      "id": 5, 
+      "question": "Whose autobiography is entitled 'I Know Why the Caged Bird Sings'?"
+    }, 
+    {
+      "answer": "Muhammad Ali", 
+      "category": 4, 
+      "difficulty": 1, 
+      "id": 9, 
+      "question": "What boxer's original name is Cassius Clay?"
+    }, 
+    {
+      "answer": "George Washington Carver", 
+      "category": 4, 
+      "difficulty": 2, 
+      "id": 12, 
+      "question": "Who invented Peanut Butter?"
+    }, 
+    {
+      "answer": "Scarab", 
+      "category": 4, 
+      "difficulty": 4, 
+      "id": 23, 
+      "question": "Which dung beetle was worshipped by the ancient Egyptians?"
+    }, 
+    {
+      "answer": "better than you", 
+      "category": 4, 
+      "difficulty": 5, 
+      "id": 29, 
+      "question": "How are you?"
+    }
+  ], 
+  "total_questions": 23
 }
 ```
   
