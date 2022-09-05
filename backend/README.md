@@ -69,9 +69,38 @@ One note before you delve into your tasks: for each endpoint, you are expected t
 
 ## Documenting your Endpoints
 
-You will need to provide detailed documentation of your API endpoints including the URL, request parameters, and the response body. Use the example below as a reference.
+You will need to provide detailed documentation of your API endpoints including the URL, request parameters, and the response body. Use the example below as a reference. [done]
 
-### Documentation Example
+## Documentation
+
+#### Error Handlers
+
+In our application, we uses conventional JSON object to indicate the success or failure of an API request. It will return JSON response with the following body:
+
+- `error`: indicate the HTTP status code.
+- `message`: indicate a short description for the error type.
+- `success`: indicate the success or the failure of the request.
+
+Example:
+```bash
+{
+  "error": 404,
+  "message": "resource not found",
+  "success": false
+}
+```
+
+Error Types:
+
+- `400`: bad request
+- `404`: resource not found
+- `405`: method not allowed
+- `422`: unprocessable
+- `500`: internal server error
+
+
+#### API endpoints
+
 
 `GET '/api/v1.0/categories'`
 
