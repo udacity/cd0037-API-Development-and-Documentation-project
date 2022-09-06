@@ -45,15 +45,16 @@ def create_app(test_config=None):
     """
     @app.route("/categories")
     def get_categories():
-        selection = Category.query.all()
-        categories = {category.id: category.type for category in selection}
-
-        if len(categories) == 0:
-            abort(404)
         if request.method != 'GET':
             abort(405)
+        else:
+            selection = Category.query.all()
+            categories = {category.id: category.type for category in selection}
 
-        return jsonify({"success": True, "categories": categories})
+            if len(categories) == 0:
+                abort(404)    
+
+            return jsonify({"success": True, "categories": categories})
 
     """
     @TODO:
@@ -69,25 +70,26 @@ def create_app(test_config=None):
     """
     @app.route("/questions")
     def get_questions():
-        selection = Question.query.order_by(Question.id).all()
-        questions_on_page = paginated_questions(request, selection)
-        get_categories = Category.query.all()
-        categories = {category.id: category.type for category in get_categories}
-
-        if len(questions_on_page) == 0:
-            abort(404)
         if request.method != 'GET':
             abort(405)
-        
-        return jsonify(
-            {
-                "success": True,
-                "questions": questions_on_page,
-                "total_questions": len(Question.query.all()),
-                "categories": categories,
-                "current_category": None,
-            }
-        )
+        else:
+            selection = Question.query.order_by(Question.id).all()
+            questions_on_page = paginated_questions(request, selection)
+            get_categories = Category.query.all()
+            categories = {category.id: category.type for category in get_categories}
+
+            if len(questions_on_page) == 0:
+                abort(404)
+            
+            return jsonify(
+                {
+                    "success": True,
+                    "questions": questions_on_page,
+                    "total_questions": len(Question.query.all()),
+                    "categories": categories,
+                    "current_category": None,
+                }
+            )
             
     """
     @TODO:
@@ -127,7 +129,30 @@ def create_app(test_config=None):
     categories in the left column will cause only questions of that
     category to be shown.
     """
+    @app.route("/categories/<category_id>/questions")
+    def get_questions_by_category(category_id):
+        if request.method != 'GET':
+            abort(405)
+        else:
+            category = Category.query.filter(Category.id == category_id).one_or_none()
 
+            if category is None:
+                abort(404)
+
+            selection = (Question.query.filter(Question.category == category_id).order_by(Question.id).all())
+            questions_on_page = paginated_questions(request, selection)
+
+            if len(questions_on_page) == 0:
+                abort(404)
+
+            return jsonify(
+                {
+                    "success": True,
+                    "questions": questions_on_page,
+                    "total_questions": len(Question.query.filter(Question.category == category_id).all()),
+                    "current_category": category.type,
+                }
+            )
     """
     @TODO:
     Create a POST endpoint to get questions to play the quiz.
