@@ -2,7 +2,7 @@
 
 Trivia App  provides users the opportunity to test their knowledge by answering a questions based on preselected categories. The app is structured in form of a game which keeps track of score count and delivers a final score at the end of the game.
 
-# App Featuees Include:
+# App Features Include:
 
 1. Display questions - Questions can be displayed by category. Question difficulty is also displayed. The questions are displayed in a paginated list. Answers are hidden by default.
 2. Delete questions - Unwanted questions can be deleted from the list.
@@ -12,9 +12,9 @@ Trivia App  provides users the opportunity to test their knowledge by answering 
 
 # Getting Started
 
-- The current version of the app can only be run locally. run the backend app at http://127.0.0.1:5000/
+- The current version of the app can only be run locally. Run the backend app at http://127.0.0.1:5000/
 - No authentication is required for the current version of the app. 
-- Features like highscores, number of quizzes taken and leaderboard are also not available but planned for a later update
+- Features like highscores, number of quizzes taken and leaderboard are also not available but planned for a later update.
 
 # Status codes
 
@@ -134,10 +134,10 @@ curl http://127.0.0.1:5000/questions
 
 POST  /questions
 
-- Adds a new question to the questions list using the question information provided, category, difficulty and answer. It also provides a question ID based on the total number of questions in the list
-- If a search term is provided, it returns a question/questions based on the query provided
+- Adds a new question to the questions list using the question information provided, category, difficulty and answer. It also provides a question ID based on the total number of questions in the list.
+- If a search term is provided, it returns a question/questions based on the query provided.
 
-- Sample
+- Sample:
 ```
 curl http://127.0.0.1:5000/questions -X POST -H "Content-Type: application/json" -d '{"question": "Who scored the most goals in the 2002 FIFA World Cup", "answer": "Ronaldo", "difficulty": 4, "category": 6}' 
 ```
@@ -308,7 +308,7 @@ curl -X DELETE http://127.0.0.1:5000/questions/24
 ```
 
 GET  /categories
-- Returns an oblect of categories, a total number of categories and a success message
+- Returns an oblect of categories, a total number of categories and a success message.
 - Sample:
 
 ```
@@ -329,7 +329,7 @@ curl http://127.0.0.1:5000/categories
 ```
 
 GET  /categories/{category ID}/questions
-- Returns a list of questions in the given category
+- Returns a list of questions in the given category.
 - Sample: 
 ```
 curl http://127.0.0.1:5000/categories/6/questions 
@@ -373,10 +373,10 @@ curl http://127.0.0.1:5000/categories/6/questions
 
 ```
 # Testing and Frontend
-View the backend and frontend readme files for more details
+View the backend and frontend readme files for more details.
 
 # Authors
-The fantastic people at Udacity and Myself, Omotola Macaulay
+The fantastic people at Udacity and Myself, Omotola Macaulay.
 
 # Acknowledgements
-The awesome team at Udacity, Coach Caryn and all of the students, soon to be full stack extraordinaires!
+The awesome team at Udacity, Coach Caryn and all of the students.
