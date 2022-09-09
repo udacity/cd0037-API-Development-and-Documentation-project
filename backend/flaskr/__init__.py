@@ -142,23 +142,23 @@ def create_app(test_config=None):
             new_answer = body.get("answer", None)
             new_difficulty = body.get("difficulty", None)
             new_category = body.get("category", None)
-            search = body.get("searchTerm", None)
+            # search = body.get("searchTerm", None)
 
             try:
-                if search:
-                    selection = Question.query.order_by(Question.id).filter(
-                        Question.question.ilike("%{}%".format(search))
-                    )
-                    current_questions = paginated_questions(request, selection)
+                # if search:
+                #     selection = Question.query.order_by(Question.id).filter(
+                #         Question.question.ilike("%{}%".format(search))
+                #     )
+                #     current_questions = paginated_questions(request, selection)
 
-                    return jsonify(
-                        {
-                            "success": True,
-                            "questions": current_questions,
-                            "total_questions": len(selection.all()),
-                        }
-                    )
-                else:
+                #     return jsonify(
+                #         {
+                #             "success": True,
+                #             "questions": current_questions,
+                #             "total_questions": len(selection.all()),
+                #         }
+                #     )
+                # else:
                     question = Question(
                         question=new_question,
                         answer=new_answer,
@@ -191,28 +191,23 @@ def create_app(test_config=None):
     only question that include that string within their question.
     Try using the word "title" to start.
     """
-    # @app.route("/questions/search", methods=["POST"])
-    # def search_questions():
-    #     body = request.get_json()
-
-    #     search = body.get("searchTerm", None)
-
-    #     try:
-    #         selection = Question.query.order_by(Question.id).filter(Question.question.ilike('{}'.format(search))).all()
-
-    #         search_result = paginated_questions(request, selection)
-
-    #         return jsonify(
-    #             {
-    #                 "success": True,
-    #                 "questions": search_result,
-    #                 "total_questions": len(selection),
-    #                 "current_category": None,
-    #             }
-    #         )
-
-    #     except:
-    #         abort(422)
+    @app.route("/questions/search", methods=["POST"])
+    def search_questions():
+        body = request.get_json()
+        search_term = body.get("searchTerm", None)
+        try:
+            selection = Question.query.filter(Question.question.ilike(f"%{search_term}%")).all()
+            result = paginated_questions(request, selection)
+            return jsonify(
+                {
+                    "success": True,
+                    "questions": result,
+                    "total_questions": len(selection),
+                    "current_category": None,
+                }
+            )
+        except:
+            abort(422)
     """
     @TODO:
     Create a GET endpoint to get questions based on category.
