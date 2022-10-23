@@ -89,6 +89,230 @@ You will need to provide detailed documentation of your API endpoints including 
   "6": "Sports"
 }
 ```
+## 'GET '/questions'
+- Fetches all questions paginated by 10 items.
+- Dictionary of categories.
+- Outputs the total number of questions
+- displays the current category of the questions.
+returns an object with the following keys:
+  - `success`: The success flag
+  - `questions`: A list of questions (paginated by 10 items)
+  - `categories`: A dictionary of categories
+  - `total_questions`: The total of questions
+  - `current_category`: The current category
+  ``` json object:
+  {
+  "categories": {
+    "1": "Science",
+    "2": "Art",
+    "3": "Geography",
+    "4": "History",
+    "5": "Entertainment",
+    "6": "Sports"
+  },
+  "current_category": null,
+  "questions": [
+    {
+      "answer": "Apollo 13",
+      "category": 5,
+      "difficulty": 4,
+      "id": 2,
+      "question": "What movie earned Tom Hanks his third straight Oscar nomination, in 1996?"
+    },
+    {
+      "answer": "Tom Cruise",
+      "category": 5,
+      "difficulty": 4,
+      "id": 4,
+      "question": "What actor did author Anne Rice first denounce, then praise in the role of her beloved Lestat?"
+    },
+    {
+      "answer": "Maya Angelou",
+      "category": 4,
+      "difficulty": 2,
+      "id": 5,
+      "question": "Whose autobiography is entitled 'I Know Why the Caged Bird Sings'?"
+    },
+    {
+      "answer": "Edward Scissorhands",
+      "category": 5,
+      "difficulty": 3,
+      "id": 6,
+      "question": "What was the title of the 1990 fantasy directed by Tim Burton about a young man with multi-bladed appendages?"
+    },
+    {
+      "answer": "Muhammad Ali",
+      "category": 4,
+      "difficulty": 1,
+      "id": 9,
+      "question": "What boxer's original name is Cassius Clay?"
+    },
+  ],
+  "success": true,
+  "total_questions": 19
+}
+
+### DELETE `/questions/:question_id/`
+- Delete question using a question ID
+- Request arguments:
+  - `question_id` (integer): The question id
+- Returns: An object with theses keys:
+  - `success` that contains a `boolean`.
+  - `deleted` that contains the ID of the question created.
+
+```json
+{
+  "success": true,
+  "deleted": 1,
+}
+```
+### POST `/create_question`
+- Create a new question.
+- Request arguments:
+  - `question` (string) - The question
+  - `answer` (string) - The answer
+  - `difficulty` (string) - The question difficulty
+  - `category` (string) - The question category
+- Returns: An object with theses keys:
+  - `success` that contains a `boolean`.
+  - `created` that contains the ID of the question created.
+  - `questions` that displays paginated list of questions.
+  - `total_questions' that displays the total number of questions
+
+```json
+{
+  "success": true,
+  "created": 1,
+  "questions": "paginated questions",
+  "total_questions" : 20,
+}
+```
+## POST `/search`
+- Search a question.
+- Request arguments:
+  - `search` (string) - The term to search
+- Returns: An object with these keys:
+  - `success`: The success flag
+  - `questions`: A list of questions
+  - `total_questions`: The total of questions
+``` json
+{
+  "success": true,
+  "questions": [
+    {
+      "answer": "Apollo 13",
+      "category": 5,
+      "difficulty": 4,
+      "id": 2,
+      "question": "What movie earned Tom Hanks his third straight Oscar nomination, in 1996?"
+    },
+    {
+      "answer": "Tom Cruise",
+      "category": 5,
+      "difficulty": 4,
+      "id": 4,
+      "question": "What actor did author Anne Rice first denounce, then praise in the role of her beloved Lestat?"
+    },
+  ],
+  "total_questions": 10,
+}
+```
+### GET `/categories/:category_id/questions`
+- Fetches a list of questions based on category.
+- Request arguments:
+  - `category_id` (integer): The category id
+- Returns: An object with these keys:
+  - `success`: The success flag
+  - `questions`: A list of questions (paginated by 10 items)
+  - `total_questions`: The total of questions
+  - `current_category`: The current category
+
+```json
+{
+  "current_category": {
+    "id": 1,
+    "type": "Science"
+  },
+  "questions": [
+    {
+      "answer": "The Liver",
+      "category": 1,
+      "difficulty": 4,
+      "id": 20,
+      "question": "What is the heaviest organ in the human body?"
+    },
+    {
+      "answer": "Alexander Fleming",
+      "category": 1,
+      "difficulty": 3,
+      "id": 21,
+      "question": "Who discovered penicillin?"
+    },
+    {
+      "answer": "Blood",
+      "category": 1,
+      "difficulty": 4,
+      "id": 22,
+      "question": "Hematology is a branch of medicine involving the study of what?"
+    }
+  ],
+  "success": true,
+  "total_questions": 3
+}
+```
+### POST `/quizzes`
+- Fetches a question to play the quiz.
+- Request arguments:
+  - `quiz_category` (dictionary): The quiz category with the `type` and the `id`.
+  - `previous_ids` (list of strings): The previous questions ids
+- Returns: An object with these keys:
+  - `success`: The success flag
+  - `question`: The question to play
+
+```json
+{
+  "success": true,
+  "question":{
+    "answer": "Apollo 13",
+    "category": 5,
+    "difficulty": 4,
+    "id": 2,
+    "question": "What movie earned Tom Hanks his third straight Oscar nomination, in 1996?"
+  }
+}
+```
+### Error 404
+- Returns an object with these keys: `success`, `error` and `message`.
+
+```json
+{
+  "success": false,
+  "error": 404,
+  "message": "Resource Not Found"
+}
+```
+
+### Error 422
+- Returns an object with these keys: `success`, `error` and `message`.
+
+```json
+{
+  "success": false,
+  "error": 422,
+  "message": "unprocessable"
+}
+```
+
+### Error 500
+- Returns an object with these keys: `success`, `error` and `message`.
+
+```json
+{
+  "success": false,
+  "error": 500,
+  "message": "internal server error"
+}
+```
 
 ## Testing
 

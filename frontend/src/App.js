@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import React, { Component} from 'react';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import './stylesheets/App.css';
 import FormView from './components/FormView';
 import QuestionView from './components/QuestionView';
@@ -12,12 +12,12 @@ class App extends Component {
       <div className='App'>
         <Header path />
         <Router>
-          <Switch>
-            <Route path='/' exact component={QuestionView} />
-            <Route path='/add' component={FormView} />
-            <Route path='/play' component={QuizView} />
-            <Route component={QuestionView} />
-          </Switch>
+          <Routes>
+            <Route path='/' exact element={<QuestionView/>} />
+            <Route path='/add' element={<FormView/>} />
+            <Route path='/play' element={<QuizView/>} />
+            <Route element={<QuestionView/>} />
+          </Routes>
         </Router>
       </div>
     );
