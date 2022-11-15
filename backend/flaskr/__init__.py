@@ -378,6 +378,16 @@ def create_app(test_config=None):
             }
         ), 422
 
+    @app.errorhandler(500)
+    def internal_server_error(error):
+        return jsonify(
+            {
+                "success": False,
+                "error": 500,
+                "message": "internal server error",
+            }
+        ), 500
+
     if __name__ == "__main__":
         app.run(debug=True)
 
