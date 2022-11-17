@@ -90,6 +90,217 @@ You will need to provide detailed documentation of your API endpoints including 
 }
 ```
 
+### API Reference
+
+#### Getting Started
+
+Base URL: At present this app can only be run locally and is not hosted as a base URL. The backend app is hosted at the default, `http://localhost:5000/`, which is set as a proxy in the frontend configuration.
+
+Authentication: This version of the application does not require authentication or API keys.
+
+- Get `/categories`
+
+  - Returns a list of categories
+  - URI: `http://127.0.0.1:500/categories`
+  - Response:
+
+    ```json
+    {
+      "categories": {
+        "1": "Science",
+        "2": "Art",
+        "3": "Geography",
+        "4": "History",
+        "5": "Entertainment",
+        "6": "Sports"
+      },
+      "success": true
+    }
+    ```
+
+- Get `/questions`
+
+  - Returns a list of questions, number of total questions, current category, categories
+  - URI: `http://127.0.0.1:500/questions`
+  - Response:
+
+    ```json
+    {
+      "categories": {
+        "1": "Science",
+        "2": "Art",
+        "3": "Geography",
+        "4": "History",
+        "5": "Entertainment",
+        "6": "Sports"
+      },
+      "current_category": null,
+      "questions": [
+        {
+          "answer": "Apollo 13",
+          "category": 5,
+          "difficulty": 4,
+          "id": 2,
+          "question": "What movie earned Tom Hanks his third straight Oscar nomination, in 1996?"
+        },
+        {
+          "answer": "Tom Cruise",
+          "category": 5,
+          "difficulty": 4,
+          "id": 4,
+          "question": "What actor did author Anne Rice first denounce, then praise in the role of her beloved Lestat?"
+        }
+      ]
+    }
+    ```
+
+- Delete `/questions/<int:question_id>`
+
+  - Deletes a question
+  - URI: `http://localhost:5000/questions/<int:id>`
+
+  - Response:
+    ```json
+    {
+      "deleted": <int:id>,
+      "success": true
+    }
+    ```
+
+- Post `/questions`
+
+  - Creates a new question
+  - URI: `http://localhost:5000/questions`
+  - Request Body:
+
+    ```json
+    {
+      "question": "What is the capital of France?",
+      "answer": "Paris",
+      "difficulty": 1,
+      "category": 3
+    }
+    ```
+
+  - Response:
+
+    ```json
+    {
+      "created": 20,
+      "success": true,
+      "questions": [
+        {
+          "answer": "Apollo 13",
+          "category": 5,
+          "difficulty": 4,
+          "id": 2,
+          "question": "What movie earned Tom Hanks his third straight Oscar nomination, in 1996?"
+        },
+        {
+          "question": "What is the capital of France?",
+          "answer": "Paris",
+          "difficulty": 1,
+          "category": 3,
+          "id": 20
+        }
+      ],
+      "total_questions": 20
+    }
+    ```
+
+- Post `/questions/search`
+
+  - Searches for a question
+  - URI: `http://localhost:5000/questions/search`
+  - Request Body:
+
+    ```json
+    {
+      "searchTerm": "title"
+    }
+    ```
+
+  - Response:
+
+    ```json
+    {
+      "questions": [
+        {
+          "answer": "Maya Angelou",
+          "category": 4,
+          "difficulty": 2,
+          "id": 5,
+          "question": "Whose autobiography is entitled 'I Know Why the Caged Bird Sings'?"
+        },
+        {
+          "answer": "Edward Scissorhands",
+          "category": 5,
+          "difficulty": 3,
+          "id": 6,
+          "question": "What was the title of the 1990 fantasy directed by Tim Burton
+    ```
+
+- Post `/quizzes`
+
+  - Plays the quiz
+  - URI: `http://localhost:5000/quizzes`
+  - Request Body:
+
+    ```json
+    {
+      "previous_questions": [1, 4, 20],
+      "quiz_category": {
+        "type": "Science",
+        "id": "1"
+      }
+    }
+    ```
+
+  - Response:
+
+    ```json
+    {
+      "question": {
+        "answer": "The Liver",
+        "category": 1,
+        "difficulty": 4,
+        "id": 16,
+        "question": "What is the heaviest organ in the human body?"
+      },
+      "success": true
+    }
+    ```
+
+- Get `/categories/<int:category_id>/questions`
+
+  - Returns a list of questions based on category
+  - URI: `http://localhost:5000/categories/<int:category_id>/questions`
+  - Response:
+
+    ```json
+    {
+      "current_category": 1,
+      "questions": [
+        {
+          "answer": "The Liver",
+          "category": 1,
+          "difficulty": 4,
+          "id": 16,
+          "question": "What is the heaviest organ in the human body?"
+        },
+        {
+          "answer": "Alexander Fleming",
+          "category": 1,
+          "difficulty": 3,
+          "id": 17,
+          "question": "Who discovered penicillin?"
+        }
+      ],
+      "success": true,
+      "total_questions": 2
+    }
+    ```
+
 ## Testing
 
 Write at least one test for the success and at least one error behavior of each endpoint using the unittest library.
