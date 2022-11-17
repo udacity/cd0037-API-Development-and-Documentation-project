@@ -237,7 +237,7 @@ Authentication: This version of the application does not require authentication 
           "category": 5,
           "difficulty": 3,
           "id": 6,
-          "question": "What was the title of the 1990 fantasy directed by Tim Burton
+          "question": "What was the title of the 1990 fantasy directed by Tim Burton"
     ```
 
 - Post `/quizzes`
