@@ -1,0 +1,20 @@
+version: '3'
+services:
+
+  postgres_db:
+    image: postgres:15.1
+    environment:   # Set up postgres database name and password
+      POSTGRES_PASSWORD: password
+      # POSTGRES_DB: bookshelf
+      # POSTGRES_USER: student
+    ports:    # Set up ports exposed for other containers to connect to
+      - 5433:5432
+    networks:
+      - app-tier
+    volumes:
+      - ./postgres:/docker-entrypoint-initdb.d
+
+
+networks:
+  app-tier:
+    driver: bridge
