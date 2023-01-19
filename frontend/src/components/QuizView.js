@@ -21,7 +21,7 @@ class QuizView extends Component {
 
   componentDidMount() {
     $.ajax({
-      url: `/categories`, //TODO: update request URL
+      url: `/categories`,
       type: 'GET',
       success: (result) => {
         this.setState({ categories: result.categories });
@@ -34,7 +34,7 @@ class QuizView extends Component {
     });
   }
 
-  selectCategory = ({ type, id = 0 }) => {
+  selectCategory = ({ type = 'all', id = 0 }) => {
     this.setState({ quizCategory: { type, id } }, this.getNextQuestion);
   };
 
@@ -49,7 +49,7 @@ class QuizView extends Component {
     }
 
     $.ajax({
-      url: '/quizzes', //TODO: update request URL
+      url: '/quizzes',
       type: 'POST',
       dataType: 'json',
       contentType: 'application/json',
@@ -104,7 +104,7 @@ class QuizView extends Component {
       <div className='quiz-play-holder'>
         <div className='choose-header'>Choose Category</div>
         <div className='category-holder'>
-          <div className='play-category' onClick={this.selectCategory}>
+          <div className='play-category' onClick={() => this.selectCategory({ type: 'all'})}>
             ALL
           </div>
           {Object.keys(this.state.categories).map((id) => {
@@ -114,10 +114,14 @@ class QuizView extends Component {
                 value={id}
                 className='play-category'
                 onClick={() =>
-                  this.selectCategory({ type: this.state.categories[id], id })
+                  {
+                    // the key id starts with 0, but categories in db with 1
+                    const category_id = parseInt(id) + 1
+                    this.selectCategory({ type: this.state.categories[id]['type'], id: category_id })
+                  }
                 }
               >
-                {this.state.categories[id]}
+                {this.state.categories[id]['type']}
               </div>
             );
           })}
