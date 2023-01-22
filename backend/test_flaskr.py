@@ -258,16 +258,17 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(actual_question["category"], expected_category_id)
         self.assertNotEqual(actual_question["id"], previous_questions[0])
 
-    def test_404_post_quizzes_start_game_with_invalid_category(self):
+    def test_422_post_quizzes_start_game_with_invalid_category(self):
         expected_category_id = 100
         post_body = {"previous_questions":[],"quiz_category":{"type":"invalid","id":expected_category_id}}
         res = self.client().post("/quizzes", json=post_body)
 
         self.assertTrue(res)
-        self.assertEqual(res.status_code, 404)
+        self.assertEqual(res.status_code, 422)
         data = json.loads(res.data)
         self.assertEqual(data["success"], False)
-        self.assertEqual(data["message"], "resource not found")
+        self.assertEqual(data["message"], "unprocessable")
+
 
 # Make the tests conveniently executable
 if __name__ == "__main__":

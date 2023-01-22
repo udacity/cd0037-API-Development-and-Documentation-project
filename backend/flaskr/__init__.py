@@ -253,27 +253,30 @@ def create_app(test_config=None):
             previous_questions = body.get("previous_questions")
             quiz_category = body.get("quiz_category")
             quiz_category_id = int(quiz_category['id'])
-            if quiz_category_id > 0:
-                currentQuestion = Question.query.filter(
+
+            if quiz_category_id != 0:
+                category = Category.query.filter(Category.id == quiz_category_id).one_or_none()
+                if category is None:
+                    abort(422)
+                current_question = Question.query.filter(
                         Question.category == quiz_category_id, (~Question.id.in_(previous_questions))
                     ).order_by(func.random()).first()
             else:
-                currentQuestion = Question.query.filter(
+                current_question = Question.query.filter(
                         (~Question.id.in_(previous_questions))
                     ).order_by(func.random()).first()
-            if currentQuestion is None:
-                abort(404)
+            if current_question is None:
+                result_question = ''
+            else:
+                result_question = current_question.format()
             return jsonify(
                 {
                     "success": True,
-                    "question": currentQuestion.format()
+                    "question": result_question
                 }
             )
-        except Exception as e:
-            if hasattr(e, 'code') and e.code == 404:
-                abort(404)
-            else:
-                abort(422)
+        except:
+            abort(422)
 
 
     """

@@ -1,4 +1,4 @@
-## Trivia App
+# Trivia App
 
 Udacity is invested in creating bonding experiences for its employees and students. 
 
@@ -30,3 +30,6 @@ The database is Postgres that can be started either locally or as a docker.
 The [frontend](./frontend/README.md) directory contains a complete React frontend to consume the data from the Flask server.
 
 > View the [Frontend README](./frontend/README.md) for more details.
+
+## Licence
+The project is licensed under the BSD license.
