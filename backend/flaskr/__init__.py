@@ -5,9 +5,7 @@ from flask_cors import CORS
 import random
 import logging
 from logging import Formatter, FileHandler
-
 from sqlalchemy import func
-
 from models import setup_db, Question, Category
 
 QUESTIONS_PER_PAGE = 10
