@@ -1,7 +1,5 @@
-import os
 from sqlalchemy import Column, String, Integer, create_engine
 from flask_sqlalchemy import SQLAlchemy
-import json
 from dotenv import dotenv_values
 
 config = dotenv_values(".env")

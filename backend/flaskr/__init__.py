@@ -1,20 +1,10 @@
-import os
 from flask import Flask, request, abort, jsonify
-from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 import random
 
 from models import setup_db, Question, Category
 
 QUESTIONS_PER_PAGE = 10
-
-def paginate_question(request, questions):
-    page = request.args.get('page', 1, type=int)
-    start = (page - 1) * QUESTIONS_PER_PAGE
-    end = start + QUESTIONS_PER_PAGE
-
-    questions = [question.format() for question in questions]
-    return questions[start:end]
 
 
 def create_app(db_URI="", test_config=None):
@@ -74,24 +64,23 @@ def create_app(db_URI="", test_config=None):
         Returns: JSON object with 10 paginated questions, \
           total_questions, categories, current_category
         '''
-        selection = Question.query.order_by(Question.id).all()
-        current_questions = paginate_question(request, selection) 
-        if len(current_questions) == 0:
+        page = request.args.get('page', 1, type=int)
+        current_questions = Question.query.order_by(Question.id).paginate(page=page, per_page=QUESTIONS_PER_PAGE)
+
+        if len(current_questions.items) == 0:
             abort(404)
 
 
         categories = Category.query.order_by(Category.id).all()
         category_types = [{"id": category.id, "type": category.type} for category in categories]
-        print("current_questions ->", current_questions)
-        print("selection ->", selection)
 
         return jsonify(
             {
                 "success": True,
-                "questions": current_questions,
-                "total_questions": len(selection),
+                "questions": [question.format() for question in current_questions.items],
+                "total_questions": len(Question.query.all()),
                 "categories": category_types,
-                "current_category": "History"
+                "current_category": None,
             }
         )
     
@@ -111,13 +100,14 @@ def create_app(db_URI="", test_config=None):
             abort(404)
 
         try:
-            questions = Question.query.filter_by(category=category.id).all()
-            current_questions = paginate_question(request, questions)
+            page = request.args.get('page', 1, type=int)
+            current_questions = Question.query.filter_by(category=category.id).paginate(page=page, per_page=QUESTIONS_PER_PAGE)
+
             return jsonify(
                 {
                     "success": True,
-                    "questions": current_questions,
-                    "total_questions": len(questions),
+                    "questions": [question.format() for question in current_questions.items],
+                    "total_questions": len(Question.query.all()),
                     "current_category": category.type,
                 }
             )
@@ -144,14 +134,15 @@ def create_app(db_URI="", test_config=None):
                 abort(404)
             
             question.delete()
-            selection = Question.query.order_by(Question.id).all()
-            current_question = paginate_question(request, selection)
+            page = request.args.get('page', 1, type=int)
+            current_questions = Question.query.order_by(Question.id).paginate(page=page, per_page=QUESTIONS_PER_PAGE)
+
 
             return jsonify(
                 {
                     "success": True,
                     "deleted": question_id,
-                    "questions": current_question,
+                    "questions": [question.format() for question in current_questions.items],
                     "total_questions": len(Question.query.all()),
                 }
             )
@@ -182,15 +173,15 @@ def create_app(db_URI="", test_config=None):
         try:
             question = Question(question=question, answer=answer, difficulty=difficulty, category=category)
             question.insert()
-
-            selection = Question.query.order_by(Question.id).all()
-            current_questions = paginate_question(request, selection)
+            
+            page = request.args.get('page', 1, type=int)
+            current_questions = Question.query.filter_by(category=category.id).paginate(page=page, per_page=QUESTIONS_PER_PAGE)
 
             return jsonify(
                 {
                     "success": True,
                     "created": question.id,
-                    "questions": current_questions,
+                    "questions": [question.format() for question in current_questions.items],
                     "total_questions": len(Question.query.all()),
                 }
             )
@@ -214,15 +205,14 @@ def create_app(db_URI="", test_config=None):
         key_word = body.get('searchTerm', None)
         
         if key_word:
-            selection = Question.query.filter(Question.question.ilike(f'%{key_word}%')).all()
-
-            current_questions = paginate_question(request, selection)
+            page = request.args.get('page', 1, type=int)
+            current_questions = Question.query.filter_by(Question.question.ilike(f'%{key_word}%')).paginate(page=page, per_page=QUESTIONS_PER_PAGE)
 
             return jsonify({
                 "success": True,
-                "questions": current_questions,
-                "total_questions": len(selection),
-                "current_category": "History"
+                "questions": [question.format() for question in current_questions.items],
+                "total_questions": len(Question.query.all()),
+                "current_category": None
             })
 
     """GET QUIZ METHODS"""
@@ -249,9 +239,7 @@ def create_app(db_URI="", test_config=None):
                 questions_by_chosen_category = Question.query.filter(Question.id.notin_((previous_questions))).all()
             if len(questions_by_chosen_category) > 0:
                 new_question = random.choice(questions_by_chosen_category).format()
-            
-            print("DEBUG -> ", questions_by_chosen_category)
-            print("DEGUB -> ", new_question)
+
             return jsonify(
                 {
                     "success": True,
