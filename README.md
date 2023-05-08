@@ -208,7 +208,7 @@ The API will return three error types when requests fail:
 }
 ```
 
-#### GET /categories/{int:category_id}/questions
+#### GET /categories/{category_id}/questions
 - General:
     - Returns a list of questions objects, success value, current category type and total number of questions.
     - Results are paginated in groups of 10. Include a request argument to choose page number, starting from 1. 
@@ -294,7 +294,7 @@ The API will return three error types when requests fail:
 }
 ```
 
-#### DELETE /questions/{int:question_id}
+#### DELETE /questions/{question_id}
 - General:
     - Deletes the question of the given ID if it exists. Returns the id of the deleted question, success value, total number of questions, and question list based on current page number to update the frontend.
     - Results are paginated in groups of 10. Include a request argument to choose page number, starting from 1. 
