@@ -13,6 +13,8 @@ class QuestionView extends Component {
       totalQuestions: 0,
       categories: {},
       currentCategory: null,
+      currentCategoryID: null,
+      searchTerm: null,
     };
   }
 
@@ -21,23 +23,31 @@ class QuestionView extends Component {
   }
 
   getQuestions = () => {
-    $.ajax({
-      url: `/questions?page=${this.state.page}`, //TODO: update request URL
-      type: 'GET',
-      success: (result) => {
-        this.setState({
-          questions: result.questions,
-          totalQuestions: result.total_questions,
-          categories: result.categories,
-          currentCategory: result.current_category,
-        });
-        return;
-      },
-      error: (error) => {
-        alert('Unable to load questions. Please try your request again');
-        return;
-      },
-    });
+    if(this.state.currentCategoryID !== null) {
+      this.getByCategory(this.state.currentCategoryID);
+      return
+    } else if (this.state.searchTerm !== null) {
+      this.submitSearch(this.state.searchTerm);
+    }
+    else {
+      $.ajax({
+        url: `/questions?page=${this.state.page}`, //TODO: update request URL
+        type: 'GET',
+        success: (result) => {
+          this.setState({
+            questions: result.questions,
+            totalQuestions: result.total_questions,
+            categories: result.categories,
+            currentCategory: result.current_category,
+          });
+          return;
+        },
+        error: (error) => {
+          alert('Unable to load questions. Please try your request again');
+          return;
+        },
+      });
+    }
   };
 
   selectPage(num) {
@@ -64,8 +74,11 @@ class QuestionView extends Component {
   }
 
   getByCategory = (id) => {
+    this.setState({
+      currentCategoryID: id,
+    })
     $.ajax({
-      url: `/categories/${id}/questions`, //TODO: update request URL
+      url: `/categories/${id}/questions?page=${this.state.page}`, //TODO: update request URL
       type: 'GET',
       success: (result) => {
         this.setState({
@@ -83,8 +96,11 @@ class QuestionView extends Component {
   };
 
   submitSearch = (searchTerm) => {
+    this.setState({
+      searchTerm: searchTerm,
+    })
     $.ajax({
-      url: `/questions`, //TODO: update request URL
+      url: `/questions/search?page=${this.state.page}`, //TODO: update request URL
       type: 'POST',
       dataType: 'json',
       contentType: 'application/json',
@@ -142,14 +158,14 @@ class QuestionView extends Component {
               <li
                 key={id}
                 onClick={() => {
-                  this.getByCategory(id);
+                  this.getByCategory(this.state.categories[id].id);
                 }}
               >
-                {this.state.categories[id]}
+                {this.state.categories[id].type}
                 <img
                   className='category'
-                  alt={`${this.state.categories[id].toLowerCase()}`}
-                  src={`${this.state.categories[id].toLowerCase()}.svg`}
+                  alt={`${this.state.categories[id].type.toLowerCase()}`}
+                  src={`${this.state.categories[id].type.toLowerCase()}.svg`}
                 />
               </li>
             ))}
@@ -163,7 +179,7 @@ class QuestionView extends Component {
               key={q.id}
               question={q.question}
               answer={q.answer}
-              category={this.state.categories[q.category]}
+              category={this.state.categories.filter((category) => category.id === q.category)[0].type}
               difficulty={q.difficulty}
               questionAction={this.questionAction(q.id)}
             />
