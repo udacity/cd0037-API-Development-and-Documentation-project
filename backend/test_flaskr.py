@@ -74,20 +74,20 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(data["success"], False)
         self.assertEqual(data["message"], "resource not found")
     
-    # """DELETE METHODS"""
+    """DELETE METHODS"""
 
-    # def test_delete_question(self):
-    #     res = self.client().delete('/questions/5')
-    #     data = json.loads(res.data)
+    def test_delete_question(self):
+        res = self.client().delete('/questions/5')
+        data = json.loads(res.data)
 
-    #     question = Question.query.filter(Question.id == 5).one_or_none()
+        question = Question.query.filter(Question.id == 5).one_or_none()
 
-    #     self.assertEqual(res.status_code, 200)
-    #     self.assertEqual(data["success"], True)
-    #     self.assertEqual(data["deleted"], 5)
-    #     self.assertTrue(data["total_questions"])
-    #     self.assertTrue(len(data["questions"]))
-    #     self.assertEqual(question, None)
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data["success"], True)
+        self.assertEqual(data["deleted"], 5)
+        self.assertTrue(data["total_questions"])
+        self.assertTrue(len(data["questions"]))
+        self.assertEqual(question, None)
     
     def test_422_if_question_does_not_exist(self):
         res = self.client().delete('/questions/1000')
@@ -97,16 +97,16 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(data["success"], False)
         self.assertEqual(data["message"], "unprocessable")
 
-    # """POST METHODS"""
+    """POST METHODS"""
 
-    # def test_create_new_question(self):
-    #     res = self.client().post('/questions', json=self.new_question)
-    #     data = json.loads(res.data)
+    def test_create_new_question(self):
+        res = self.client().post('/questions', json=self.new_question)
+        data = json.loads(res.data)
 
-    #     self.assertEqual(res.status_code, 200)
-    #     self.assertEqual(data["success"], True)
-    #     self.assertTrue(data["created"])
-    #     self.assertTrue(len(data["questions"]))
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data["success"], True)
+        self.assertTrue(data["created"])
+        self.assertTrue(len(data["questions"]))
     
     def test_405_if_questions_creation_not_allowed(self):
         res = self.client().post('/questions/45', json=self.new_question)

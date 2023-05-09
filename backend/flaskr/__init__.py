@@ -15,7 +15,6 @@ def create_app(db_URI="", test_config=None):
         setup_db(app, db_URI)
     else:
         setup_db(app)
-    #CORS(app)
     cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
 
     @app.after_request
