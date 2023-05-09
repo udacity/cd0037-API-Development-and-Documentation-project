@@ -3,6 +3,7 @@ import json
 
 from flaskr import create_app
 from dotenv import dotenv_values
+from models import setup_db, Question, Category
 
 
 class TriviaTestCase(unittest.TestCase):
