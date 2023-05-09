@@ -1,4 +1,4 @@
-from flask import Flask, request, abort, jsonify
+from flask import Flask, request, jsonify, abort
 from flask_cors import CORS
 import random
 
@@ -98,16 +98,17 @@ def create_app(db_URI="", test_config=None):
 
         if category is None:
             abort(404)
+        page = request.args.get('page', 1, type=int)
 
         try:
-            page = request.args.get('page', 1, type=int)
-            current_questions = Question.query.filter_by(category=category.id).paginate(page=page, per_page=QUESTIONS_PER_PAGE)
+            questions_query = Question.query.filter_by(category=category.id)
+            current_questions = questions_query.paginate(page=page, per_page=QUESTIONS_PER_PAGE)
 
             return jsonify(
                 {
                     "success": True,
                     "questions": [question.format() for question in current_questions.items],
-                    "total_questions": len(Question.query.all()),
+                    "total_questions": questions_query.count(),
                     "current_category": category.type,
                 }
             )
@@ -175,7 +176,7 @@ def create_app(db_URI="", test_config=None):
             question.insert()
             
             page = request.args.get('page', 1, type=int)
-            current_questions = Question.query.filter_by(category=category.id).paginate(page=page, per_page=QUESTIONS_PER_PAGE)
+            current_questions = Question.query.order_by(Question.id).paginate(page=page, per_page=QUESTIONS_PER_PAGE)
 
             return jsonify(
                 {
@@ -203,15 +204,17 @@ def create_app(db_URI="", test_config=None):
         body = request.get_json()
 
         key_word = body.get('searchTerm', None)
-        
+        page = request.args.get('page', 1, type=int)
+
         if key_word:
-            page = request.args.get('page', 1, type=int)
-            current_questions = Question.query.filter_by(Question.question.ilike(f'%{key_word}%')).paginate(page=page, per_page=QUESTIONS_PER_PAGE)
+            questions_query = Question.query.filter(Question.question.ilike(f"%{key_word}%"))
+            print(questions_query)
+            current_questions = questions_query.paginate(page=page, per_page=QUESTIONS_PER_PAGE)
 
             return jsonify({
                 "success": True,
                 "questions": [question.format() for question in current_questions.items],
-                "total_questions": len(Question.query.all()),
+                "total_questions": questions_query.count(),
                 "current_category": None
             })
 
@@ -275,14 +278,6 @@ def create_app(db_URI="", test_config=None):
             "error": 422,
             "message": "unprocessable"
         }), 422
-
-    @app.errorhandler(405)
-    def not_found(error):
-        return jsonify({
-            "success": False,
-            "error": 405,
-            "message": "method not allowed",
-        }), 405
 
     return app
 
