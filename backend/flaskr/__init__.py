@@ -1,10 +1,10 @@
 import os
-from flask import Flask, request, abort, jsonify
+from flask import Flask, request, abort, jsonify, Response
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 import random
 
-from models import setup_db, Question, Category
+from models import setup_db, Question, Category, db
 
 QUESTIONS_PER_PAGE = 10
 
@@ -16,16 +16,58 @@ def create_app(test_config=None):
     """
     @TODO: Set up CORS. Allow '*' for origins. Delete the sample route after completing the TODOs
     """
+    CORS(app, resources={r"/*": {"origins": "*"}})
 
     """
     @TODO: Use the after_request decorator to set Access-Control-Allow
     """
+
+    @app.after_request
+    def after_request(response: Response) -> Response:
+        """Define headers for CORS"""
+        response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization,true')
+        response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS')
+        return response
 
     """
     @TODO:
     Create an endpoint to handle GET requests
     for all available categories.
     """
+    @app.route('/categories', methods=['GET'])
+    def get_categories():
+        """Get all the categories and return them in JSON format"""
+        categories = Category.query.order_by(Category.type).all()
+
+        categories_dict = {category.id: category.type for category in categories}
+
+        if len(categories_dict) == 0:
+            abort(404)
+
+        return jsonify({
+            'success': True,
+            'categories': categories_dict,
+            'number_of_categories': len(categories_dict)
+        })
+
+    @app.route('/questions/<int:id>', methods=['GET'])
+    def get_question(id):
+        """Get a single question and return it in JSON format"""
+        question = Question.query.get(id)
+
+        if question is None:
+            abort(404)
+
+        return jsonify({
+            'id': question.id,
+            'question': question.question,
+            'answer': question.answer,
+            'category': question.category,
+            'difficulty': question.difficulty
+            })
+
+
+
 
 
     """
@@ -48,6 +90,18 @@ def create_app(test_config=None):
     TEST: When you click the trash icon next to a question, the question will be removed.
     This removal will persist in the database and when you refresh the page.
     """
+    @app.route('/questions/<int:id>', methods=['DELETE'])
+    def delete_question(id):
+        """Delete a question by id"""
+        delete_question = Question.query.get(id)
+        if delete_question is None:
+            abort(404)
+
+        delete_question.delete()
+        return jsonify({
+            'success': True,
+            'question_id': delete_question.id
+        })
 
     """
     @TODO:
@@ -97,6 +151,21 @@ def create_app(test_config=None):
     Create error handlers for all expected errors
     including 404 and 422.
     """
+    @app.errorhandler(404)
+    def not_found(error):
+        return jsonify({
+            'success': False,
+            'error': 404,
+            'message': 'Resource not found'
+            }), 404
+
+    @app.errorhandler(422)
+    def unprocessable(error):
+        return jsonify({
+            'success': False,
+            'error': 422,
+            'message': 'Unprocessable'
+            }), 422
 
     return app
 

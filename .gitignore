@@ -12,4 +12,5 @@ venv
 ehthumbs.db
 Thumbs.db
 env/
+venv/
 frontend/node_modules/
