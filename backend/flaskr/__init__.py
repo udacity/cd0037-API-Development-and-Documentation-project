@@ -66,10 +66,6 @@ def create_app(test_config=None):
             'difficulty': question.difficulty
             })
 
-
-
-
-
     """
     @TODO:
     Create an endpoint to handle GET requests for questions,
@@ -82,6 +78,27 @@ def create_app(test_config=None):
     ten questions per page and pagination at the bottom of the screen for three pages.
     Clicking on the page numbers should update the questions.
     """
+
+    @app.route('/questions', methods=['GET'])
+    def get_questions():
+        page = request.args.get('page', 1, type=int)  # Default to page 1 if not specified
+        start = (page - 1) * 10
+        end = start + 10
+
+        questions = Question.query.all()
+        formatted_questions = [question.format() for question in questions]
+
+        categories = Category.query.all()
+        formatted_categories = {category.id: category.type for category in categories}
+
+        return jsonify({
+            'success': True,
+            'questions': formatted_questions[start:end],
+            'total_questions': len(formatted_questions),
+            'categories': formatted_categories,
+            'current_category': None  # or set appropriately if you have this information
+        }), 200
+
 
     """
     @TODO:
@@ -114,6 +131,42 @@ def create_app(test_config=None):
     of the questions list in the "List" tab.
     """
 
+    @app.route('/questions', methods=['POST'])
+    def create_question():
+        """Create a new question"""
+        try:
+            # Attempt to parse the JSON data from the request
+            data = request.get_json()
+
+            # Validate the data (optional but recommended)
+            if 'question' not in data or 'answer' not in data or 'category' not in data or 'difficulty' not in data:
+                abort(400, description="Missing data for the new question")
+
+            # Create a new question object
+            question = Question(question=data['question'], answer=data['answer'], category=data['category'],
+                                difficulty=data['difficulty'])
+
+            # Insert the new question into the database
+            question.insert()
+
+            # Return a success response with status code 201
+            return jsonify({
+                'success': True,
+                'question': question.format(),
+                'question_id': question.id
+            }), 201
+
+        except Exception as e:
+            # Log the exception for debugging purposes
+            print(f"Error: {e}")
+
+            # Return a server error response with status code 500
+            return jsonify({
+                'success': False,
+                'error': "An error occurred while processing the request"
+            }), 500
+
+
     """
     @TODO:
     Create a POST endpoint to get questions based on a search term.
@@ -125,6 +178,27 @@ def create_app(test_config=None):
     Try using the word "title" to start.
     """
 
+    @app.route('/questions/search', methods=['POST'])
+    def search_questions():
+        """Search for questions based on a search term"""
+        data = request.get_json()
+        search_term = data.get('searchTerm', None)
+
+        if search_term:
+            search_results = Question.query.filter(Question.question.ilike(f'%{search_term}%')).all()
+            formatted_questions = [question.format() for question in search_results]
+
+            return jsonify({
+                'success': True,
+                'questions': formatted_questions,
+                'total_questions': len(formatted_questions)
+            }), 200
+        else:
+            return jsonify({
+                'success': False,
+                'error': 'No search term provided'
+            }), 400
+
     """
     @TODO:
     Create a GET endpoint to get questions based on category.
@@ -133,6 +207,24 @@ def create_app(test_config=None):
     categories in the left column will cause only questions of that
     category to be shown.
     """
+
+    @app.route('/categories/<int:category_id>/questions', methods=['GET'])
+    def get_questions_by_category(category_id):
+        """Get questions by category"""
+        try:
+            questions = Question.query.filter_by(category=str(category_id)).all()
+            formatted_questions = [question.format() for question in questions]
+            if len(formatted_questions) == 0:
+                abort(404)
+
+            return jsonify({
+                'success': True,
+                'questions': formatted_questions,
+                'total_questions': len(formatted_questions),
+                'current_category': category_id
+            }), 200
+        except Exception as e:
+            abort(404)  # Assuming category not found or other errors
 
     """
     @TODO:
@@ -145,6 +237,40 @@ def create_app(test_config=None):
     one question at a time is displayed, the user is allowed to answer
     and shown whether they were correct or not.
     """
+
+    @app.route('/quizzes', methods=['POST'])
+    def get_quiz_question():
+        """Get a random question for the quiz"""
+        try:
+            data = request.get_json()
+            previous_questions = data.get('previous_questions', [])
+            quiz_category = data.get('quiz_category', None)
+
+            if quiz_category:
+                category_id = quiz_category['id']
+                if category_id == 0:  # Assuming '0' means 'All' categories
+                    questions_query = Question.query.filter(Question.id.notin_(previous_questions))
+                else:
+                    questions_query = Question.query.filter_by(category=str(category_id)).filter(
+                        Question.id.notin_(previous_questions))
+            else:
+                questions_query = Question.query.filter(Question.id.notin_(previous_questions))
+
+            available_questions = questions_query.all()
+            if available_questions:
+                next_question = random.choice(available_questions).format()
+            else:
+                next_question = None
+
+            return jsonify({
+                'success': True,
+                'question': next_question
+            }), 200
+        except Exception as e:
+            return jsonify({
+                'success': False,
+                'error': 'An error occurred while processing the request'
+            }), 500
 
     """
     @TODO:
