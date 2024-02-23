@@ -11,7 +11,12 @@ QUESTIONS_PER_PAGE = 10
 def create_app(test_config=None):
     # create and configure the app
     app = Flask(__name__)
-    setup_db(app)
+
+    if test_config is None:
+        setup_db(app)
+    else:
+        database_path = test_config.get('SQLALCHEMY_DATABASE_URI')
+        setup_db(app, database_path=database_path)
 
     """
     @TODO: Set up CORS. Allow '*' for origins. Delete the sample route after completing the TODOs
