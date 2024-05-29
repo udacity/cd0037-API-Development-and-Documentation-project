@@ -23,12 +23,12 @@ class TriviaTestCase(unittest.TestCase):
 
     
     def tearDown(self):
-        """Executed after reach test"""
+        """Executed after each test"""
         pass
 
     """
-    TODO
-    Write at least one test for each test for successful operation and for expected errors.
+    @TODO:
+    Write at least one test for each endpoint for successful operation and for expected errors.
     """
 
 
