@@ -21,17 +21,39 @@ def create_app(test_config=None):
     """
     @TODO: Set up CORS. Allow '*' for origins. Delete the sample route after completing the TODOs
     """
+    #CORS(app, resources={r"*/api/*" : {origins: '*'}})
+
+    CORS(app)
 
     """
     @TODO: Use the after_request decorator to set Access-Control-Allow
     """
+    @app.after_request
+    def after_request(response):
+        response.headers.add('Access-Control-Allow-Headers', 'Content-Type, Authorization')
+        response.headers.add('Access-Control-Allow-Methods', 'GET, POST, PATCH, DELETE, OPTIONS')
+        return response
 
     """
     @TODO:
     Create an endpoint to handle GET requests
     for all available categories.
     """
+    @app.route('/categories')
+    def get_categories():
+        # Implement pagination
+        page = request.args.get('page', 1, type=int)
+        start = (page - 1) * 10
+        end = start + 10
 
+        categories = Category.query.all()
+        formatted_categories = [category.format() for category in categories]
+
+        return jsonify({
+            'success': True,
+            'categories': formatted_categories[start:end],
+            'total_categories': len(formatted_categories)
+        })
 
     """
     @TODO:
@@ -45,6 +67,25 @@ def create_app(test_config=None):
     ten questions per page and pagination at the bottom of the screen for three pages.
     Clicking on the page numbers should update the questions.
     """
+    @app.route('/questions')
+    def get_questions():
+        # Implement pagination
+        page = request.args.get('page', 1, type=int)
+        start = (page - 1) * 10
+        end = start + 10
+
+        categories = Category.query.all()
+        formatted_categories = [category.format() for category in categories]
+
+        questions = Question.query.all()
+        formatted_questions = [question.format() for question in questions]
+
+        return jsonify({
+            'success': True,
+            'questions': formatted_questions[start:end],
+            'total_questions': len(formatted_questions),
+            'categories': formatted_categories,
+        })
 
     """
     @TODO:
