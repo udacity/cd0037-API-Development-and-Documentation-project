@@ -1,10 +1,8 @@
 import os
 import unittest
-import json
-from flask_sqlalchemy import SQLAlchemy
 
 from flaskr import create_app
-from models import setup_db, Question, Category
+from models import db
 
 
 class TriviaTestCase(unittest.TestCase):
@@ -13,18 +11,28 @@ class TriviaTestCase(unittest.TestCase):
     def setUp(self):
         """Define test variables and initialize app."""
         self.database_name = "trivia_test"
-        self.database_path = "postgres://{}/{}".format('localhost:5432', self.database_name)
-        
+        self.database_user = "postgres"
+        self.database_password = "password"
+        self.database_host = "localhost:5432"
+        self.database_path = f"postgresql://{self.database_user}:{self.database_password}@{self.database_host}/{self.database_name}"
+
+        # Create app with the test configuration
         self.app = create_app({
-            "SQLALCHEMY_DATABASE_URI": self.database_path
+            "SQLALCHEMY_DATABASE_URI": self.database_path,
+            "SQLALCHEMY_TRACK_MODIFICATIONS": False,
+            "TESTING": True
         })
+        self.client = self.app.test_client()
 
-        self.client = self.app.test_client
+        # Bind the app to the current context and create all tables
+        with self.app.app_context():
+            db.create_all()
 
-    
     def tearDown(self):
-        """Executed after reach test"""
-        pass
+        """Executed after each test"""
+        with self.app.app_context():
+            db.session.remove()
+            db.drop_all()
 
     """
     TODO
