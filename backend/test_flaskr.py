@@ -2,7 +2,7 @@ import os
 import unittest
 
 from flaskr import create_app
-from models import db
+from models import db, Question, Category
 
 
 class TriviaTestCase(unittest.TestCase):
