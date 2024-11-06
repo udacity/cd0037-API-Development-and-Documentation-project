@@ -38,17 +38,16 @@ class TriviaTestCase(unittest.TestCase):
     TODO
     Write at least one test for each test for successful operation and for expected errors.
     """
-    # def test_get_categories(self):
-    #     res = self.client().get("/api/v1.0/categories")        
-    #     data = json.loads(res.data)
-    #     print(f'Data:{res.data}')
-    #     self.assertEqual(res.status_code, 200)
-    #     self.assertEqual(data["success"], True)
-    #     self.assertTrue(data["total_category"])
-    #     self.assertTrue(len(data["categories"]))
+    def test_get_categories(self):
+        res = self.client().get("/categories")        
+        data = json.loads(res.data)
+        print(f'Data:{res.data}')
+        self.assertEqual(res.status_code, 200)
+        self.assertTrue(data["categories"])
+        self.assertTrue(len(data["categories"]))
     
     # def test_404_sent_requesting_beyond_valid_page(self):
-    #     res = self.client().get("/api/v1.0/categories?page=1000", json={"category": 1})
+    #     res = self.client().get("/categories?page=1000", json={"category": 1})
     #     data = json.loads(res.data)
 
     #     self.assertEqual(res.status_code, 404)
@@ -76,7 +75,7 @@ class TriviaTestCase(unittest.TestCase):
     #     self.assertTrue(len(data["questions"]))
 
     def test_quiz(self):
-        res = self.client().get("/play",json={"previous_question": [1],"quiz_category":{ "id":1}})    
+        res = self.client().get("/quizzes",json={"previous_question": [1],"quiz_category":{ "id":1}})    
         print(f'Data:{res.data}')   
         data = json.loads(res.data)
         print(f'Data:{data}')

@@ -54,7 +54,7 @@ def create_app(test_config=None):
         try:
             selection = Category.query.order_by(Category.id).all()
             print(f'selection:{selection}' )
-            
+            #current_categories = paginate_questions(request, selection)
             formatted_category = [category.format() for category in selection]
             print(f'formatted_category:{formatted_category}' )
             if len(formatted_category) == 0:
@@ -330,7 +330,7 @@ def create_app(test_config=None):
                 response = {"question":None}
             else:
                 new_question_id = random.choice(filtered_questions_in_category)
-                question=Question.query.get(new_question_id)
+                question = db.session.get(Question,new_question_id)
                 response = {"question":question.format()}
             return jsonify(response)
              
