@@ -1,8 +1,8 @@
 from sqlalchemy import Column, String, Integer
 from flask_sqlalchemy import SQLAlchemy
 database_name = 'trivia'
-database_user = 'postgres'
-database_password = 'password'
+database_user = 'Emmanuel'
+database_password = 'Manos'
 database_host = 'localhost:5432'
 database_path = f'postgresql://{database_user}:{database_password}@{database_host}/{database_name}'
 
