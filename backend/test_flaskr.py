@@ -54,7 +54,7 @@ class TriviaTestCase(unittest.TestCase):
     #     self.assertEqual(data["success"], False)
     #     self.assertEqual(data["message"], "resource not found")
 
-    # def test_get_questions_category(self):
+    # def test_get_questions(self):
     #     res = self.client().get("/questions", json={"category": 1})    
     #     print(f'Data:{res.data}')   
     #     data = json.loads(res.data)
@@ -63,6 +63,15 @@ class TriviaTestCase(unittest.TestCase):
     #     self.assertTrue(data["total_questions"])
     #     self.assertTrue(data["current_category"])
     #     self.assertTrue(len(data["questions"]))
+
+    # def test_get_questions(self):
+    #     res = self.client().get("/questions", json={"category": 1})    
+    #     print(f'Data:{res.data}')   
+    #     data = json.loads(res.data)
+    #     print(f'Data:{data}')
+    #     self.assertEqual(res.status_code, 404)
+    #     self.assertEqual(data["success"], False)
+    #     self.assertEqual(data["message"], "resource not found")
     
     # def test_get_questions_by_category_id(self):
     #     res = self.client().get("/category/2/questions", json={"category": 1})    
@@ -74,6 +83,15 @@ class TriviaTestCase(unittest.TestCase):
     #     self.assertTrue(data["current_category"])
     #     self.assertTrue(len(data["questions"]))
 
+    # def test_get_questions_by_category_id(self):
+    #     res = self.client().get("/category/2/questions", json={"category": 1})    
+    #     print(f'Data:{res.data}')   
+    #     data = json.loads(res.data)
+    #     print(f'Data:{data}')
+    #     self.assertEqual(res.status_code, 404)
+    #     self.assertEqual(data["success"], False)
+    #     self.assertEqual(data["message"], "resource not found")
+
     def test_quiz(self):
         res = self.client().get("/quizzes",json={"previous_question": [1],"quiz_category":{ "id":1}})    
         print(f'Data:{res.data}')   
@@ -83,6 +101,15 @@ class TriviaTestCase(unittest.TestCase):
         self.assertTrue(data["question"])
         self.assertTrue(len(data["question"]))
 
+
+    # def test_quiz(self):
+    #     res = self.client().get("/quizzes",json={"previous_question": [1],"quiz_category":{ "id":7}})    
+    #     print(f'Data:{res.data}')   
+    #     data = json.loads(res.data)
+    #     print(f'Data:{data}')
+    #     self.assertEqual(res.status_code, 404)
+    #     self.assertEqual(data["success"], False)
+    #     self.assertEqual(data["message"], "resource not found")
 # Make the tests conveniently executable
 if __name__ == "__main__":
     unittest.main()
